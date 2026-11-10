@@ -193,6 +193,14 @@ enum ScreenshotScenes {
                     await query.runAll()
                 }
             },
+            ScreenshotScene(name: "structure", title: DemoData.local.name, size: windowSize) {
+                await workspace(DemoData.local) { model in
+                    model.openTable(.init(ref: TableRef(name: "orders"), kind: .table), permanent: true)
+                    guard let orders = model.selectedTab?.table else { return }
+                    await orders.load()
+                    orders.isShowingStructure = true
+                }
+            },
             ScreenshotScene(name: "workspace-password", title: DemoData.events.name, size: windowSize) {
                 var profile = DemoData.events
                 profile.passwordStorage = .askEveryTime

@@ -269,6 +269,10 @@ final class WorkspaceModel {
             return String(localized: "This statement must be confirmed before it runs.")
         case SessionError.notOpen:
             return String(localized: "The connection is closed.")
+        case SessionError.connectionLost(let reconnected):
+            return reconnected
+                ? String(localized: "The connection was lost and has been reopened. The statement was not sent again: run it once more if you still want it.")
+                : String(localized: "The connection was lost and could not be reopened.")
         case SSHTunnelError.invalid(let value):
             return String(localized: "The SSH settings are not valid: “\(value)”.")
         case SSHTunnelError.failed(let message):

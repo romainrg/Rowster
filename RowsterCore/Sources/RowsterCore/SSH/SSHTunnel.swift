@@ -12,6 +12,8 @@ public enum SSHTunnelError: Error, Equatable, Sendable {
 public protocol Tunnel: Sendable {
     /// The local Unix socket that leads to the database.
     var socketPath: String { get }
+    /// False once the tunnel died, so that a reconnection opens a new one.
+    var isRunning: Bool { get }
     func close()
 }
 

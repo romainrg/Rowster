@@ -14,11 +14,15 @@ struct TableTabView: View {
             if let error = model.errorMessage {
                 ErrorBanner(message: error) { model.errorMessage = nil }
             }
-            HSplitView {
-                DataGridView(source: model, revision: model.gridRevision, structureRevision: model.gridStructureRevision)
-                    .frame(minWidth: 320, maxWidth: .infinity, maxHeight: .infinity)
-                    .layoutPriority(1)
-                if model.isInspectorVisible { InspectorView(model: model) }
+            if model.isShowingStructure, let structure = model.structure {
+                StructureView(table: structure).frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                HSplitView {
+                    DataGridView(source: model, revision: model.gridRevision, structureRevision: model.gridStructureRevision)
+                        .frame(minWidth: 320, maxWidth: .infinity, maxHeight: .infinity)
+                        .layoutPriority(1)
+                    if model.isInspectorVisible { InspectorView(model: model) }
+                }
             }
             Divider()
             footer
@@ -28,6 +32,13 @@ struct TableTabView: View {
 
     private var footer: some View {
         HStack(spacing: 10) {
+            Picker("View", selection: $model.isShowingStructure) {
+                Text("Data").tag(false)
+                Text("Structure").tag(true)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .fixedSize()
             Button {
                 model.toggleFilterBar()
             } label: {
@@ -62,6 +73,20 @@ struct TableTabView: View {
             countView
             if model.isLoading { ProgressView().controlSize(.small) }
             Spacer(minLength: 8)
+            if let exported = model.exportedRows {
+                Text("Exporting… \(exported) rows").foregroundStyle(.secondary).monospacedDigit()
+                Button("Cancel") { model.cancelExport() }
+            } else {
+                Menu {
+                    Button("CSV…") { chooseExportFile(.csv) }
+                    Button("JSON…") { chooseExportFile(.json) }
+                } label: {
+                    Text("Export")
+                }
+                .menuStyle(.borderlessButton)
+                .fixedSize()
+                .help(Text("Export every row matching the filter"))
+            }
             Menu {
                 ForEach(TableTabModel.pageSizes, id: \.self) { size in
                     Button {
@@ -114,6 +139,13 @@ struct TableTabView: View {
         .padding(.horizontal, 12)
         .frame(height: 30)
         .background(.bar)
+    }
+
+    private func chooseExportFile(_ format: ExportFormat) {
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = "\(model.ref.name).\(format.fileExtension)"
+        panel.canCreateDirectories = true
+        if panel.runModal() == .OK, let url = panel.url { model.export(to: url, format: format) }
     }
 
     /// Shown while changes are pending: how many, and the only three things that can be done with them.

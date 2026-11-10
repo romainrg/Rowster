@@ -55,6 +55,11 @@ final class TableTabModel: GridDataSource {
     /// Set by the window: whether writing is currently locked.
     var isReadOnly: () -> Bool = { false }
 
+    var isShowingStructure = false
+    /// Rows written by the export in progress; `nil` when none is running.
+    private(set) var exportedRows: Int?
+    private var exportTask: Task<Void, Never>?
+
     var isInspectorVisible = false
     private var loadedBlobs: [BlobKey: Data] = [:]
     private var referencedTables: [TableRef: TableDescription] = [:]
@@ -125,6 +130,40 @@ final class TableTabModel: GridDataSource {
     private func browseQuery() -> BrowseQuery? {
         guard let structure else { return nil }
         return BrowseQuery(table: structure, filter: appliedFilter, sort: sort, limit: pageSize, offset: pageIndex * pageSize)
+    }
+
+    // MARK: - Export
+
+    /// Streams every row matching the filter, in the current order, to a file. The whole table is read,
+    /// not only the loaded page; binary values are written in full.
+    func export(to url: URL, format: ExportFormat) {
+        guard exportTask == nil, let query = browseQuery() else { return }
+        let select = query.selectAll(dialect: dialect)
+        exportedRows = 0
+        activity.running += 1
+        exportTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let count = try await session.export(select.sql, parameters: select.parameters, to: url, format: format) { rows in
+                    Task { @MainActor [weak self] in self?.exportedRows = rows }
+                }
+                notice = String(localized: "\(count) rows exported.")
+            } catch is CancellationError {
+                notice = String(localized: "Export cancelled.")
+            } catch let error as DatabaseError where error.isCancellation {
+                notice = String(localized: "Export cancelled.")
+            } catch {
+                errorMessage = WorkspaceModel.describe(error)
+            }
+            exportedRows = nil
+            exportTask = nil
+            activity.running -= 1
+        }
+    }
+
+    func cancelExport() {
+        exportTask?.cancel()
+        Task { await session.cancel() }
     }
 
     // MARK: - Filters
