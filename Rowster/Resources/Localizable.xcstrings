@@ -1,0 +1,16 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Welcome to Rowster" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bienvenue dans Rowster"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

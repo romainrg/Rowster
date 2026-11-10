@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="2">
+    <title>Rowster</title>
+    <license file="LICENSE.txt"/>
+    <options customize="never" require-scripts="false" hostArchitectures="arm64,x86_64"/>
+    <domains enable_localSystem="true"/>
+    <allowed-os-versions>
+        <os-version min="14.0"/>
+    </allowed-os-versions>
+    <choices-outline>
+        <line choice="default">
+            <line choice="io.github.romainrg.Rowster.pkg"/>
+        </line>
+    </choices-outline>
+    <choice id="default"/>
+    <choice id="io.github.romainrg.Rowster.pkg" visible="false">
+        <pkg-ref id="io.github.romainrg.Rowster.pkg"/>
+    </choice>
+    <pkg-ref id="io.github.romainrg.Rowster.pkg" version="@VERSION@" onConclusion="none">Rowster-component.pkg</pkg-ref>
+</installer-gui-script>
