@@ -5,7 +5,7 @@ endif
 APP := build/Build/Products/Debug/Rowster.app
 XCB := xcodebuild -project Rowster.xcodeproj -scheme Rowster -destination 'platform=macOS' -derivedDataPath build
 
-.PHONY: generate build test core-test check-strings run demo release clean
+.PHONY: generate build test core-test integration check-strings run demo release screenshots clean
 
 generate:
 	xcodegen generate
@@ -20,6 +20,10 @@ test: generate
 core-test:
 	swift test --package-path RowsterCore $(if $(FILTER),--filter $(FILTER))
 
+# Tests against PostgreSQL, MySQL and sshd on localhost. Never run in CI.
+integration:
+	ROWSTER_INTEGRATION=1 swift test --package-path RowsterCore --filter Integration
+
 check-strings:
 	scripts/check-strings.sh
 
@@ -31,6 +35,9 @@ demo: build
 
 release:
 	scripts/build-release.sh
+
+screenshots:
+	scripts/screenshots.sh --readme
 
 clean:
 	rm -rf build Rowster.xcodeproj Rowster/Resources/Info.plist RowsterCore/.build
