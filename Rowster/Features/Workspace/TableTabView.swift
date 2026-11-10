@@ -7,6 +7,10 @@ struct TableTabView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            if model.isFilterBarVisible {
+                FilterBarView(model: model)
+                Divider()
+            }
             if let error = model.errorMessage {
                 ErrorBanner(message: error) { model.errorMessage = nil }
             }
@@ -19,6 +23,16 @@ struct TableTabView: View {
 
     private var footer: some View {
         HStack(spacing: 10) {
+            Button {
+                model.toggleFilterBar()
+            } label: {
+                Image(systemName: model.appliedFilter == nil
+                    ? "line.3.horizontal.decrease.circle" : "line.3.horizontal.decrease.circle.fill")
+            }
+            .foregroundStyle(model.appliedFilter == nil ? Color.secondary : Color.accentColor)
+            .keyboardShortcut("f")
+            .help(Text("Filters"))
+            .accessibilityLabel(Text("Filters"))
             if model.rows.isEmpty {
                 Text(model.isLoading ? "Loading…" : "No rows").foregroundStyle(.secondary)
             } else {

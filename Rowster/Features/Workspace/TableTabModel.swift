@@ -42,6 +42,12 @@ final class TableTabModel: GridDataSource {
     private var columnWidths: [String: Double] = [:]
     private var generation = 0
 
+    var filters: [FilterCondition] = []
+    var filterMatch: FilterMatch = .all
+    var isFilterBarVisible = false
+    private(set) var appliedFilter: SQLFragment?
+    var filterError: String?
+
     static let pageSizes = [100, 300, 1000, 5000]
 
     init(
@@ -90,7 +96,71 @@ final class TableTabModel: GridDataSource {
 
     private func browseQuery() -> BrowseQuery? {
         guard let structure else { return nil }
-        return BrowseQuery(table: structure, sort: sort, limit: pageSize, offset: pageIndex * pageSize)
+        return BrowseQuery(table: structure, filter: appliedFilter, sort: sort, limit: pageSize, offset: pageIndex * pageSize)
+    }
+
+    // MARK: - Filters
+
+    func addFilter() {
+        let target = columns.first.map { FilterCondition.Target.column($0.title) } ?? .anyColumn
+        filters.append(FilterCondition(target: target, op: target == .anyColumn ? .contains : .equals))
+        isFilterBarVisible = true
+    }
+
+    func removeFilter(_ id: UUID) {
+        filters.removeAll { $0.id == id }
+    }
+
+    func toggleFilterBar() {
+        isFilterBarVisible.toggle()
+        if isFilterBarVisible, filters.isEmpty { addFilter() }
+    }
+
+    /// Builds the WHERE clause from the enabled rows and reloads from the first page.
+    func applyFilters() async {
+        guard let structure else { return }
+        do {
+            appliedFilter = try FilterBuilder(columns: structure.columns, dialect: dialect).build(filters, match: filterMatch)
+            filterError = nil
+        } catch {
+            filterError = Self.describe(error as? FilterError)
+            return
+        }
+        pageIndex = 0
+        exactCount = nil
+        await fetchPage()
+    }
+
+    func clearFilters() async {
+        filters = []
+        filterError = nil
+        guard appliedFilter != nil else { return }
+        appliedFilter = nil
+        pageIndex = 0
+        exactCount = nil
+        await fetchPage()
+    }
+
+    /// Shows a table filtered on one value, as when following a foreign key.
+    func setFilter(column: String, equals value: SQLValue) async {
+        filters = [FilterCondition(target: .column(column), op: .equals, value: value.displayText ?? "")]
+        isFilterBarVisible = true
+        if structure == nil { await load() }
+        await applyFilters()
+    }
+
+    /// The applied filter with its values written in, for reading only.
+    var appliedFilterSQL: String? {
+        appliedFilter.map { "WHERE " + $0.inlinedForDisplay(dialect: dialect) }
+    }
+
+    private static func describe(_ error: FilterError?) -> String {
+        switch error {
+        case .unknownColumn(let name): return String(localized: "Unknown column: \(name)")
+        case .missingValue: return String(localized: "A filter has no value.")
+        case .unsafeRawSQL: return String(localized: "The SQL condition must be a single expression, without a semicolon.")
+        case nil: return String(localized: "The filter is not valid.")
+        }
     }
 
     private func fetchPage() async {
