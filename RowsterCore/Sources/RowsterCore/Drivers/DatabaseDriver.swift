@@ -67,6 +67,19 @@ public protocol DatabaseDriver: AnyObject, Sendable {
     func cancel() async
     var transactionState: TransactionState { get async }
     var serverVersion: String? { get async }
+    /// Switches the session between read-only and read-write. Throws when the server refuses: the caller
+    /// must then treat the connection as unusable rather than leave it writable.
+    func setReadOnly(_ readOnly: Bool) async throws
+    /// An introspector that reads the catalogs through this connection.
+    func makeIntrospector() -> any SchemaIntrospecting
+}
+
+public extension DatabaseDriver {
+    func setReadOnly(_ readOnly: Bool) async throws {
+        for statement in readOnly ? dialect.readOnlyStatements : dialect.readWriteStatements {
+            try await run(statement)
+        }
+    }
 }
 
 public struct QueryResult: Equatable, Sendable {

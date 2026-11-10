@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "RowsterCore", targets: ["RowsterCore"])
     ],
     targets: [
-        .target(name: "RowsterCore"),
+        .target(name: "RowsterCore", linkerSettings: [.linkedLibrary("sqlite3")]),
         .testTarget(name: "RowsterCoreTests", dependencies: ["RowsterCore"])
     ]
 )
