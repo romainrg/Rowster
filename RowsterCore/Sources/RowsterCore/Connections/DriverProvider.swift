@@ -31,7 +31,9 @@ public struct LiveDriverProvider: DriverProviding {
         case .postgres:
             return PostgresDriver(configuration: try Self.serverConfiguration(profile, password: password, database: database))
         case .mysql, .mariadb:
-            throw DriverProviderError.unsupportedEngine(profile.engine)
+            return MySQLDriver(
+                configuration: try Self.serverConfiguration(profile, password: password, database: database),
+                engine: profile.engine)
         }
     }
 

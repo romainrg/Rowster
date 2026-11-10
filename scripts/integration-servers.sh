@@ -11,6 +11,7 @@ ROOT="$PWD/build/integration"
 PASSWORD="rowster-test"
 PG_PORT=54329
 MYSQL_PORT=33069
+MARIADB_PORT=33079
 SSH_PORT=22229
 
 brew_bin() { # brew_bin <formula...> : first existing bin directory
@@ -20,7 +21,7 @@ brew_bin() { # brew_bin <formula...> : first existing bin directory
   done
 }
 PG_BIN="$(brew_bin postgresql@17 postgresql@18 postgresql@16 postgresql)"
-MYSQL_BIN="$(brew_bin mysql mariadb)"
+MYSQL_BIN="$(brew_bin mysql)"
 
 start_postgres() {
   [[ -n "$PG_BIN" ]] || { echo "postgres: not installed, skipped"; return; }
@@ -98,6 +99,40 @@ EOF
   echo "mysql: 127.0.0.1:$MYSQL_PORT (users rowster, rowster_tls; database rowster_test)"
 }
 
+start_mariadb() {
+  local bin
+  bin="$(brew_bin mariadb)"
+  [[ -n "$bin" ]] || { echo "mariadb: not installed, skipped"; return; }
+  local data="$ROOT/mariadb"
+  local fresh=0
+  if [[ ! -d "$data" ]]; then
+    mkdir -p "$ROOT"
+    "$bin/mariadb-install-db" --no-defaults --datadir="$data" --auth-root-authentication-method=normal >/dev/null 2>&1
+    openssl req -new -x509 -days 3650 -nodes -subj "/CN=localhost" \
+      -keyout "$data/server-key.pem" -out "$data/server-cert.pem" 2>/dev/null
+    fresh=1
+  fi
+  if ! "$bin/mariadb-admin" --no-defaults -S "$ROOT/mariadb.sock" -u root ping >/dev/null 2>&1; then
+    "$bin/mariadbd" --no-defaults --datadir="$data" --port="$MARIADB_PORT" --bind-address=127.0.0.1 \
+      --socket="$ROOT/mariadb.sock" --pid-file="$ROOT/mariadb.pid" --log-error="$ROOT/mariadb.log" \
+      --ssl-cert="$data/server-cert.pem" --ssl-key="$data/server-key.pem" >/dev/null 2>&1 &
+    for _ in $(seq 1 60); do
+      "$bin/mariadb-admin" --no-defaults -S "$ROOT/mariadb.sock" -u root ping >/dev/null 2>&1 && break
+      sleep 0.5
+    done
+  fi
+  if [[ $fresh == 1 ]]; then
+    "$bin/mariadb" --no-defaults -S "$ROOT/mariadb.sock" -u root <<EOF
+CREATE DATABASE IF NOT EXISTS rowster_test CHARACTER SET utf8mb4;
+CREATE USER IF NOT EXISTS 'rowster'@'127.0.0.1' IDENTIFIED BY '$PASSWORD';
+CREATE USER IF NOT EXISTS 'rowster'@'localhost' IDENTIFIED BY '$PASSWORD';
+GRANT ALL ON *.* TO 'rowster'@'127.0.0.1';
+GRANT ALL ON *.* TO 'rowster'@'localhost';
+EOF
+  fi
+  echo "mariadb: 127.0.0.1:$MARIADB_PORT (user rowster; database rowster_test)"
+}
+
 start_sshd() {
   local dir="$ROOT/ssh"
   if [[ ! -d "$dir" ]]; then
@@ -130,12 +165,13 @@ EOF
 stop_all() {
   [[ -n "$PG_BIN" && -d "$ROOT/pg" ]] && "$PG_BIN/pg_ctl" -D "$ROOT/pg" -m fast stop >/dev/null 2>&1 || true
   [[ -f "$ROOT/mysql.pid" ]] && kill "$(cat "$ROOT/mysql.pid")" 2>/dev/null || true
+  [[ -f "$ROOT/mariadb.pid" ]] && kill "$(cat "$ROOT/mariadb.pid")" 2>/dev/null || true
   [[ -f "$ROOT/ssh/sshd.pid" ]] && kill "$(cat "$ROOT/ssh/sshd.pid")" 2>/dev/null || true
   echo "stopped"
 }
 
 case "${1:-}" in
-  start) start_postgres; start_mysql; start_sshd ;;
+  start) start_postgres; start_mysql; start_mariadb; start_sshd ;;
   stop) stop_all ;;
   status)
     [[ -n "$PG_BIN" ]] && "$PG_BIN/pg_isready" -h 127.0.0.1 -p "$PG_PORT" || true
