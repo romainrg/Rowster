@@ -37,12 +37,12 @@ make clean
   - `SQL/`: tokenizer, `StatementSplitter`, `StatementClassifier`, one `SQLDialect` per engine.
   - `Builders/`: `FilterBuilder`, `BrowseQuery`, `ChangeSet`, `CommitRunner`.
   - `Drivers/`: `DatabaseDriver` and `ResultCursor` protocols; `SQLite/`, `Postgres/`, `MySQL/`.
-  - `Transport/`, `SSH/`: byte streams over Network.framework with TLS upgrade; tunnel through `/usr/bin/ssh`.
-  - `Connections/`: `ConnectionProfile`, `ConnectionStore`, `ConnectionURL`, `SecretStore`.
-  - `Session/`: one `Session` per work window (connections, read-only state, reconnection).
-  - `Export/`, `History/`, `Support/`.
-- `RowsterCore/Tests/RowsterCoreTests/`: XCTest suites. SQLite is tested for real, in process. `IntegrationTests/` only run with `make integration`.
-- `Rowster/`: app target. `App/` (`AppEnvironment` live and demo, windows), `Features/<Area>/` (view and view model), `Shared/` (theme, grid, editor), `Demo/`, `Resources/`.
+  - `Transport/`, `SSH/`: `ByteStream` over Network.framework with the in-protocol TLS upgrade; `SSHTunnel` through `/usr/bin/ssh` and the askpass server.
+  - `Connections/`: `ConnectionProfile`, `ConnectionStore`, `ConnectionURL`, `SecretStore`, `DriverProviding`.
+  - `Session/`: one `Session` per work window (primary and auxiliary connections, read-only state, commit, reconnection), `ViewStateStore`.
+  - `Export/`, `History/`.
+- `RowsterCore/Tests/RowsterCoreTests/`: XCTest suites. SQLite is tested for real, in process. The `*IntegrationTests` classes only run with `make integration`, against the servers of `scripts/integration-servers.sh start`.
+- `Rowster/`: app target. `App/` (`AppEnvironment` live and demo, windows, settings), `Features/Welcome`, `Features/Workspace` (window, sidebar, tabs, data tab, filters, inspector, structure, safety), `Features/Editor`, `Shared/` (theme, `DataGrid`, `SQLEditorView`), `Demo/`, `Resources/`.
 - `Tools/Screenshots/`: offscreen renderer for the README images (development only, never shipped); scenes in `Scenes.swift`.
 - `scripts/`: release build, release notes, strings check, screenshots, icon.
 - `docs/ARCHITECTURE.md`: layers, data flow, safety model. Read it before touching a driver, the session or anything that writes.
@@ -57,7 +57,7 @@ Never break these. If a task seems to require it, stop and ask the human.
 4. **Results are bounded.** Rows are pulled through a `ResultCursor` with a default limit (300 when browsing, configurable in the editor). Cancel always works. A BLOB is loaded only on demand.
 5. **Values are data.** The app never builds SQL by concatenating values. Identifiers are quoted by the dialect and values are bound parameters. No API takes a value and returns SQL text to execute.
 6. **Secrets.** Passwords are stored only in the Keychain (or asked on each connection). A connection export contains no password. Credentials, SQL text and query results never appear in a log.
-7. **Network.** Rowster only contacts the databases and SSH hosts the user configured. Every socket and process is opened through `TransportFactory`. No telemetry. The AI assistant and the MCP server (later versions) are off by default, enabled per connection; the MCP server listens on localhost only, with a token, read-only by default.
+7. **Network.** Rowster only contacts the databases and SSH hosts the user configured. Every connection is created by a `DriverProviding` and every tunnel by a `TunnelProviding`: the demo environment has a provider that only opens in-memory SQLite, and no tunnel provider. No telemetry. The AI assistant and the MCP server (later versions) are off by default, enabled per connection; the MCP server listens on localhost only, with a token, read-only by default.
 8. **No third-party dependency, no new entitlement, no signing change** without the maintainer's approval. Apple frameworks only, plus the SDK's `libsqlite3` and `/usr/bin/ssh`. Not sandboxed, hardened runtime on, ad hoc signed, bundle identifier `io.github.romainrg.Rowster`.
 9. **Clean-room.** TablePro is AGPL: never read its code for inspiration and never copy anything from it.
 10. **Demo isolation.** Demo mode goes through `AppEnvironment.demo()` only: an in-memory SQLite sample and fake drivers, never the network, the Keychain or a real database.
@@ -70,7 +70,9 @@ Never break these. If a task seems to require it, stop and ask the human.
 - Code comments and documentation in **English**, identifiers in English. Keep comments minimal: code should explain itself.
 - Logic and rules in `RowsterCore`; views, view models and macOS integration in `Rowster/`. Views are `@Observable` MVVM, with no new singletons. Services are reached through `AppEnvironment`, set in both `live()` and `demo()`.
 - `RowsterCore` imports Foundation, Network, CryptoKit, CommonCrypto, Security, SQLite3, Observation and os, never SwiftUI or AppKit.
-- **Strings are added by hand.** xcodebuild does not add new keys to `Localizable.xcstrings`. Add each key in the exact format the compiler extracts (for example `%lld rows`) with a complete French value, then run `make build && make check-strings`.
+- **Strings are added by hand.** xcodebuild does not add new keys to `Localizable.xcstrings`. Add each key in the exact format the compiler extracts (for example `%lld rows`) with a complete French value, then run `make build && make check-strings`. `scripts/add-strings.py` merges `key<TAB>French` lines from standard input into the catalog, and `make check-strings` lists the keys that are still missing.
+- **Values a user types** become `SQLValue`s through `SQLValue.typed(_:as:)` and reach the server as bound parameters. `literalForDisplay` and `inlinedForDisplay` exist for the SQL preview and the clipboard only: never execute their output.
+- **A `Session` is the only way to run a statement from the app.** It checks the read-only state and destructive statements before anything is sent; do not call a driver directly from a view model.
 - Put `#Preview` blocks **last** in a file: `check-strings` ignores strings after the first `#Preview`.
 - Zero build warnings. 4-space indentation, `// MARK: -` sections (see `.editorconfig`).
 - Conventional Commits: `feat:`, `fix:`, `build:`, `ci:`, `docs:`, `test:`, `chore:`. One branch and one pull request per increment.
