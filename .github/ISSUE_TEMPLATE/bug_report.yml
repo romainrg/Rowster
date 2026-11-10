@@ -1,0 +1,62 @@
+name: Bug report
+description: Something does not work as expected.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please check the [existing issues](https://github.com/romainrg/Rowster/issues) first.
+        **Did Rowster write something you had not seen and confirmed, or write on a read-only connection?** Say so in the report: that is the most important kind of bug.
+        **Security problem?** Do not open a public issue: follow the [security policy](https://github.com/romainrg/Rowster/security/policy).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open a PostgreSQL connection
+        2. Open the table ...
+        3. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: engine
+    attributes:
+      label: Database engine
+      options:
+        - PostgreSQL
+        - MySQL
+        - MariaDB
+        - SQLite
+        - A PostgreSQL-compatible server (say which below)
+        - Not related to an engine
+  - type: input
+    id: server
+    attributes:
+      label: Server version and connection type
+      placeholder: PostgreSQL 17.2, TLS required, through an SSH tunnel
+  - type: input
+    id: version
+    attributes:
+      label: Rowster version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version and Mac
+      placeholder: macOS 15.1, MacBook Air M2 (or an Intel Mac)
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots or output
+      description: Remove anything private (host names, credentials, data) before posting. `make demo` shows the app with a sample database if you want to reproduce without real data.
