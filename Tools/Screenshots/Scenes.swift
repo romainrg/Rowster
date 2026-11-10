@@ -119,6 +119,23 @@ enum ScreenshotScenes {
                 guard let preview = await orders.gridForeignKeyPreview(row: 0, column: 1) else { return AnyView(EmptyView()) }
                 return AnyView(ForeignKeyPreviewView(preview: preview).frame(maxWidth: .infinity, maxHeight: .infinity))
             },
+            ScreenshotScene(name: "unlocked", title: DemoData.production.name, size: windowSize) {
+                await workspace(DemoData.production) { model in
+                    model.openTable(.init(ref: TableRef(name: "customers"), kind: .table), permanent: true)
+                    await model.unlockWriting()
+                }
+            },
+            ScreenshotScene(name: "hazard", title: DemoData.production.name, size: CGSize(width: 520, height: 330)) {
+                let request = WorkspaceModel.HazardRequest(
+                    statements: [
+                        (sql: "DELETE FROM orders", hazard: .deleteWithoutWhere),
+                        (sql: "DROP TABLE audit_log", hazard: .drop)
+                    ]) { _ in }
+                return AnyView(HazardSheet(request: request, profile: DemoData.production) { _ in })
+            },
+            ScreenshotScene(name: "settings", title: "Rowster", size: CGSize(width: 480, height: 360)) {
+                AnyView(SettingsView().environment(\.appEnvironment, AppEnvironment.demo()))
+            },
             ScreenshotScene(name: "workspace-password", title: DemoData.events.name, size: windowSize) {
                 var profile = DemoData.events
                 profile.passwordStorage = .askEveryTime

@@ -111,6 +111,16 @@
         }
       }
     },
+    "A read-only connection always asks for a confirmation before writing is unlocked. This adds Touch ID, or your Mac password." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une connexion en lecture seule demande toujours une confirmation avant de déverrouiller l'écriture. Ce réglage ajoute Touch ID, ou le mot de passe de votre Mac."
+          }
+        }
+      }
+    },
     "Add Filter" : {
       "localizations" : {
         "fr" : {
@@ -471,6 +481,16 @@
         }
       }
     },
+    "DELETE without WHERE: removes every row" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE sans WHERE : supprime toutes les lignes"
+          }
+        }
+      }
+    },
     "Data grid" : {
       "localizations" : {
         "fr" : {
@@ -587,6 +607,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Déposez un fichier ou choisissez-en un"
+          }
+        }
+      }
+    },
+    "Drops an object and everything it contains" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprime un objet et tout ce qu'il contient"
           }
         }
       }
@@ -807,6 +837,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aperçu de l'image"
+          }
+        }
+      }
+    },
+    "Keep a history of the statements I run" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garder un historique des instructions que j'exécute"
           }
         }
       }
@@ -1281,6 +1321,16 @@
         }
       }
     },
+    "Removes every row of the table" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprime toutes les lignes de la table"
+          }
+        }
+      }
+    },
     "Rename Group" : {
       "localizations" : {
         "fr" : {
@@ -1297,6 +1347,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Renommer…"
+          }
+        }
+      }
+    },
+    "Require Touch ID to unlock writing" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exiger Touch ID pour déverrouiller l'écriture"
           }
         }
       }
@@ -1341,6 +1401,16 @@
         }
       }
     },
+    "Rows fetched per statement" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lignes lues par instruction"
+          }
+        }
+      }
+    },
     "Rowster" : {
       "localizations" : {
         "fr" : {
@@ -1361,12 +1431,52 @@
         }
       }
     },
+    "Run Anyway" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exécuter quand même"
+          }
+        }
+      }
+    },
+    "Run these %lld statements?" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exécuter ces %lld instructions ?"
+          }
+        }
+      }
+    },
+    "Run this statement?" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exécuter cette instruction ?"
+          }
+        }
+      }
+    },
     "Runs an exact count, which can be slow on a large table" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lance un comptage exact, qui peut être lent sur une grande table"
+          }
+        }
+      }
+    },
+    "SQL Editor" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éditeur SQL"
           }
         }
       }
@@ -1417,6 +1527,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Utilisateur SSH"
+          }
+        }
+      }
+    },
+    "Safety" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sécurité"
           }
         }
       }
@@ -1541,6 +1661,16 @@
         }
       }
     },
+    "Statements that change data will be allowed in this window until you lock it again or close it." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les instructions qui modifient des données seront autorisées dans cette fenêtre jusqu'à ce que vous la verrouilliez de nouveau ou la fermiez."
+          }
+        }
+      }
+    },
     "Switch database" : {
       "localizations" : {
         "fr" : {
@@ -1651,6 +1781,16 @@
         }
       }
     },
+    "The history stores statements only, never their results. It stays on this Mac." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'historique ne conserve que les instructions, jamais leurs résultats. Il reste sur ce Mac."
+          }
+        }
+      }
+    },
     "The password is used for this window only and is not saved." : {
       "localizations" : {
         "fr" : {
@@ -1687,6 +1827,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cette connexion est en lecture seule"
+          }
+        }
+      }
+    },
+    "This connection is read-only. Click to unlock writing in this window." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette connexion est en lecture seule. Cliquez pour déverrouiller l'écriture dans cette fenêtre."
           }
         }
       }
@@ -1731,6 +1881,16 @@
         }
       }
     },
+    "UPDATE without WHERE: changes every row" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE sans WHERE : modifie toutes les lignes"
+          }
+        }
+      }
+    },
     "Unexpected answer from the server: %@" : {
       "localizations" : {
         "fr" : {
@@ -1747,6 +1907,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Colonne inconnue : %@"
+          }
+        }
+      }
+    },
+    "Unlock Writing" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déverrouiller l'écriture"
+          }
+        }
+      }
+    },
+    "Unlock writing on “%@”?" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déverrouiller l'écriture sur « %@ » ?"
           }
         }
       }
@@ -1821,12 +2001,32 @@
         }
       }
     },
+    "Writing is unlocked in this window. Click to lock it again." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'écriture est déverrouillée dans cette fenêtre. Cliquez pour la verrouiller de nouveau."
+          }
+        }
+      }
+    },
     "Writing must be unlocked in the window before any change can be made." : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "L'écriture doit être déverrouillée dans la fenêtre avant toute modification."
+          }
+        }
+      }
+    },
+    "Writing unlocked" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écriture déverrouillée"
           }
         }
       }
@@ -1947,6 +2147,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "commence par"
+          }
+        }
+      }
+    },
+    "unlock writing on %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "déverrouiller l'écriture sur %@"
           }
         }
       }
