@@ -37,23 +37,62 @@ public actor Session {
     private var auxiliaryBusy = false
     private var auxiliaryWaiters: [CheckedContinuation<Void, Never>] = []
 
-    public init(profile: ConnectionProfile, password: String?, provider: any DriverProviding) {
+    private let tunnels: (any TunnelProviding)?
+    private let prompt: AskpassHandler?
+    private let runsBootstrap: Bool
+    private var tunnel: (any Tunnel)?
+
+    /// - Parameters:
+    ///   - tunnels: opens the SSH tunnel of a profile that has one. `nil` in demo mode.
+    ///   - prompt: answers the questions OpenSSH asks while the tunnel opens.
+    ///   - runsBootstrap: `false` for a connection test, which must run nothing.
+    public init(
+        profile: ConnectionProfile, password: String?, provider: any DriverProviding, tunnels: (any TunnelProviding)? = nil,
+        prompt: AskpassHandler? = nil, runsBootstrap: Bool = true
+    ) {
         self.profile = profile
         self.password = password
         self.provider = provider
+        self.tunnels = tunnels
+        self.prompt = prompt
+        self.runsBootstrap = runsBootstrap
         isReadOnly = profile.isReadOnlyOnOpen
+    }
+
+    /// The profile the drivers connect with: through the tunnel's socket when there is one. The host is
+    /// kept, so a certificate is still checked against the database's own name.
+    private var connectionProfile: ConnectionProfile {
+        guard let tunnel else { return profile }
+        var through = profile
+        through.socketPath = tunnel.socketPath
+        return through
     }
 
     // MARK: - Lifecycle
 
-    /// Connects, makes the session read-only when it must be, then runs the user's bootstrap SQL.
-    /// Nothing else runs. If any step fails the connection is closed: it never stays half-configured.
+    /// Opens the tunnel when the profile has one, connects, makes the session read-only when it must be,
+    /// then runs the user's bootstrap SQL. Nothing else runs. If any step fails the connection is closed:
+    /// it never stays half-configured.
     public func open() async throws {
-        let driver = try provider.makeDriver(for: profile, password: password, database: database, readOnly: isReadOnly)
+        if tunnel == nil, profile.ssh.isEnabled, profile.engine != .sqlite {
+            guard let tunnels else { throw ConnectionError.unreachable("SSH tunnels are not available here") }
+            tunnel = try await tunnels.openTunnel(for: profile, prompt: prompt)
+        }
+        do {
+            try await openPrimary()
+        } catch {
+            tunnel?.close()
+            tunnel = nil
+            throw error
+        }
+    }
+
+    private func openPrimary() async throws {
+        let driver = try provider.makeDriver(for: connectionProfile, password: password, database: database, readOnly: isReadOnly)
         try await driver.connect()
         do {
             if isReadOnly { try await driver.setReadOnly(true) }
-            for statement in driver.dialect.splitter.split(profile.bootstrapSQL) {
+            for statement in driver.dialect.splitter.split(runsBootstrap ? profile.bootstrapSQL : "") {
                 // The user wrote the bootstrap SQL, so a destructive statement in it counts as confirmed.
                 try Self.check(statement.text, dialect: driver.dialect, readOnly: isReadOnly, confirmed: true)
                 try await driver.run(statement.text)
@@ -66,6 +105,12 @@ public actor Session {
     }
 
     public func close() async {
+        await closeConnections()
+        tunnel?.close()
+        tunnel = nil
+    }
+
+    private func closeConnections() async {
         await primary?.close()
         await auxiliary?.close()
         primary = nil
@@ -202,7 +247,7 @@ public actor Session {
 
     /// Reconnects to another database of the same server.
     public func switchDatabase(_ name: String) async throws {
-        await close()
+        await closeConnections()
         database = name
         try await open()
     }
@@ -238,7 +283,7 @@ public actor Session {
         await acquireAuxiliary()
         defer { releaseAuxiliary() }
         if auxiliary == nil {
-            let driver = try provider.makeDriver(for: profile, password: password, database: database, readOnly: true)
+            let driver = try provider.makeDriver(for: connectionProfile, password: password, database: database, readOnly: true)
             try await driver.connect()
             do {
                 try await driver.setReadOnly(true)

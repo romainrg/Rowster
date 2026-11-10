@@ -9,12 +9,19 @@ struct MemoryProvider: DriverProviding {
     final class Requests: @unchecked Sendable {
         private let lock = NSLock()
         private var databases: [String?] = []
-        func record(_ database: String?) { lock.withLock { databases.append(database) } }
+        private var socketPaths: [String] = []
+        func record(_ database: String?, socket: String) {
+            lock.withLock {
+                databases.append(database)
+                socketPaths.append(socket)
+            }
+        }
         var all: [String?] { lock.withLock { databases } }
+        var sockets: [String] { lock.withLock { socketPaths } }
     }
 
     func makeDriver(for profile: ConnectionProfile, password: String?, database: String?, readOnly: Bool) throws -> any DatabaseDriver {
-        requests.record(database)
+        requests.record(database, socket: profile.socketPath)
         var configuration = SQLiteConfiguration.sharedMemory(name: name + (database ?? ""))
         configuration.readOnly = readOnly
         return SQLiteDriver(configuration: configuration)
