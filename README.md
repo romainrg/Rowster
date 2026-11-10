@@ -6,6 +6,11 @@
 
 <p align="center">A native, free and open-source database client for macOS, with safety built in.</p>
 
+<p align="center">
+  <a href="https://github.com/romainrg/Rowster/releases/latest"><img src="https://img.shields.io/github/v/release/romainrg/Rowster?sort=semver&style=for-the-badge&logo=apple&logoColor=white&label=Download&color=0A84FF" alt="Download Rowster for macOS"></a><br>
+  <sub>Free and open source · macOS 14 or later · Apple silicon and Intel</sub>
+</p>
+
 <p align="center"><a href="README.fr.md">Version française</a></p>
 
 <picture>
@@ -15,9 +20,28 @@
 
 Rowster browses, filters, edits and queries PostgreSQL, MySQL, MariaDB and SQLite databases. It is written in Swift, with its own drivers: no bundled C library, no Electron. There is no limit on tabs, windows or filters, and nothing to pay.
 
-## Status
+## Install
 
-Version 0.1 is built and tested, and has no published release yet: build it from the sources (see below). What it contains is listed here; what was left for later is in [Limits](#limits-of-01).
+Download the files from the [latest release](https://github.com/romainrg/Rowster/releases/latest). Pick one of the two installers:
+
+- **DMG**: open `Rowster-<version>.dmg` and drag **Rowster** onto the **Applications** folder.
+- **PKG**: double-click `Rowster-<version>.pkg` and follow the installer. It always installs to `/Applications`.
+
+Neither is notarized by Apple (that needs a paid developer account), so macOS blocks the first open. Try to open it once, then go to **System Settings › Privacy & Security**, scroll down and click **Open Anyway** next to the message about Rowster (or about the installer, for the PKG). Alternatively, remove the quarantine flag yourself:
+
+```sh
+xattr -dr com.apple.quarantine /Applications/Rowster.app
+# for the installer, before opening it:
+xattr -dr com.apple.quarantine ~/Downloads/Rowster-<version>.pkg
+```
+
+Verify your download against the checksums published with the release, from the folder that holds the files:
+
+```sh
+shasum -a 256 -c SHA256SUMS
+```
+
+**Requirements:** macOS 14 Sonoma or later. What was left for later is in [Limits](#limits-of-01).
 
 ## Features
 

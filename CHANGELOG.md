@@ -4,6 +4,10 @@ All notable changes to Rowster are documented here. The format follows [Keep a C
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-10
+
+First public version.
+
 ### Added
 
 - Welcome window: connections in groups, with their engine, environment label and color, and a search field.
@@ -30,3 +34,4 @@ All notable changes to Rowster are documented here. The format follows [Keep a C
 - SQLite connections.
 - Demo mode (`--demo`): sample connections on an in-memory database, with no network, disk or Keychain access.
 - English and French.
+- DMG and PKG installers, with `SHA256SUMS`, built by `make release` and published by the release workflow.

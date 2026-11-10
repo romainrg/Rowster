@@ -6,6 +6,11 @@
 
 <p align="center">Un client de bases de données natif, gratuit et open source pour macOS, avec la sécurité intégrée.</p>
 
+<p align="center">
+  <a href="https://github.com/romainrg/Rowster/releases/latest"><img src="https://img.shields.io/github/v/release/romainrg/Rowster?sort=semver&style=for-the-badge&logo=apple&logoColor=white&label=T%C3%A9l%C3%A9charger&color=0A84FF" alt="Télécharger Rowster pour macOS"></a><br>
+  <sub>Gratuit et open source · macOS 14 ou ultérieur · Apple silicon et Intel</sub>
+</p>
+
 <p align="center"><a href="README.md">English version</a></p>
 
 <picture>
@@ -15,9 +20,28 @@
 
 Rowster parcourt, filtre, modifie et interroge des bases PostgreSQL, MySQL, MariaDB et SQLite. Il est écrit en Swift, avec ses propres pilotes : aucune bibliothèque C embarquée, pas d'Electron. Il n'y a aucune limite d'onglets, de fenêtres ou de filtres, et rien à payer.
 
-## État
+## Installation
 
-La version 0.1 est construite et testée, et n'a pas encore de version publiée : compilez-la depuis les sources (voir plus bas). Ce qu'elle contient est listé ici ; ce qui a été laissé pour plus tard est dans [Limites](#limites-de-la-01).
+Téléchargez les fichiers de la [dernière version](https://github.com/romainrg/Rowster/releases/latest). Choisissez l'un des deux installeurs :
+
+- **DMG** : ouvrez `Rowster-<version>.dmg` et faites glisser **Rowster** sur le dossier **Applications**.
+- **PKG** : double-cliquez sur `Rowster-<version>.pkg` et suivez l'installeur. Il installe toujours dans `/Applications`.
+
+Aucun des deux n'est notarisé par Apple (il faut pour cela un compte développeur payant), donc macOS bloque la première ouverture. Essayez de l'ouvrir une fois, puis allez dans **Réglages Système › Confidentialité et sécurité**, faites défiler vers le bas et cliquez sur **Ouvrir quand même** à côté du message concernant Rowster (ou l'installeur, pour le PKG). Vous pouvez aussi retirer vous-même l'attribut de quarantaine :
+
+```sh
+xattr -dr com.apple.quarantine /Applications/Rowster.app
+# pour l'installeur, avant de l'ouvrir :
+xattr -dr com.apple.quarantine ~/Downloads/Rowster-<version>.pkg
+```
+
+Vérifiez votre téléchargement avec les sommes de contrôle publiées avec la version, depuis le dossier qui contient les fichiers :
+
+```sh
+shasum -a 256 -c SHA256SUMS
+```
+
+**Prérequis :** macOS 14 Sonoma ou plus récent. Ce qui a été laissé pour plus tard est dans [Limites](#limites-de-la-01).
 
 ## Fonctionnalités
 
