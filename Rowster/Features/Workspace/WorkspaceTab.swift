@@ -40,35 +40,6 @@ final class WorkspaceTab: Identifiable {
     }
 }
 
-/// A table or view opened in a tab.
-@MainActor
-@Observable
-final class TableTabModel {
-    let ref: TableRef
-    let kind: SchemaObjectKind
-    let session: Session
-    let dialect: any SQLDialect
-
-    private(set) var structure: TableDescription?
-    var errorMessage: String?
-
-    init(ref: TableRef, kind: SchemaObjectKind, session: Session, dialect: any SQLDialect) {
-        self.ref = ref
-        self.kind = kind
-        self.session = session
-        self.dialect = dialect
-    }
-
-    func loadStructure() async {
-        guard structure == nil else { return }
-        do {
-            structure = try await session.describe(ref)
-        } catch {
-            errorMessage = ErrorText.describe(error)
-        }
-    }
-}
-
 /// A SQL editor tab.
 @MainActor
 @Observable

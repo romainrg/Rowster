@@ -35,8 +35,9 @@ final class WorkspaceModel {
     private(set) var tabs: [WorkspaceTab] = []
     var selectedTabID: UUID?
     private var queryCount = 0
+    let activity = Activity()
     /// Number of statements running on the primary connection, for the activity indicator.
-    var runningStatements = 0
+    var runningStatements: Int { activity.running }
 
     init(profile: ConnectionProfile, env: AppEnvironment) {
         self.profile = profile
@@ -142,7 +143,9 @@ final class WorkspaceModel {
             selectedTabID = existing.id
             return
         }
-        let model = TableTabModel(ref: item.ref, kind: item.kind, session: session, dialect: dialect)
+        let model = TableTabModel(
+            ref: item.ref, kind: item.kind, session: session, dialect: dialect, connectionID: profile.id,
+            viewState: env.viewState, activity: activity)
         let tab = WorkspaceTab(content: .table(model), isPreview: !permanent)
         if let previewIndex = tabs.firstIndex(where: \.isPreview) {
             tabs[previewIndex] = tab

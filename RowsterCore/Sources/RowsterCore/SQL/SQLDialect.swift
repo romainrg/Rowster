@@ -59,6 +59,8 @@ public protocol SQLDialect: Sendable {
     func textCast(_ expression: String) -> String
     /// Operator for a case-insensitive pattern match.
     var caseInsensitiveLike: String { get }
+    /// Length in bytes of a binary expression, so a grid can show a BLOB's size without loading it.
+    func byteLength(_ expression: String) -> String
 }
 
 public extension SQLDialect {
@@ -102,6 +104,7 @@ public struct PostgresDialect: SQLDialect {
     public var readWriteStatements: [String] { ["SET SESSION CHARACTERISTICS AS TRANSACTION READ WRITE"] }
     public func textCast(_ expression: String) -> String { "\(expression)::text" }
     public var caseInsensitiveLike: String { "ILIKE" }
+    public func byteLength(_ expression: String) -> String { "octet_length(\(expression))" }
 }
 
 public struct MySQLDialect: SQLDialect {
@@ -124,6 +127,7 @@ public struct MySQLDialect: SQLDialect {
     public var readWriteStatements: [String] { ["SET SESSION TRANSACTION READ WRITE"] }
     public func textCast(_ expression: String) -> String { "CAST(\(expression) AS CHAR)" }
     public var caseInsensitiveLike: String { "LIKE" }
+    public func byteLength(_ expression: String) -> String { "OCTET_LENGTH(\(expression))" }
 }
 
 public struct SQLiteDialect: SQLDialect {
@@ -141,4 +145,5 @@ public struct SQLiteDialect: SQLDialect {
     public var readWriteStatements: [String] { ["PRAGMA query_only = OFF"] }
     public func textCast(_ expression: String) -> String { "CAST(\(expression) AS TEXT)" }
     public var caseInsensitiveLike: String { "LIKE" }
+    public func byteLength(_ expression: String) -> String { "length(CAST(\(expression) AS BLOB))" }
 }
