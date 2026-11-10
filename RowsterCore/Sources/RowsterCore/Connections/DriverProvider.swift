@@ -28,9 +28,29 @@ public struct LiveDriverProvider: DriverProviding {
             guard !profile.filePath.isEmpty else { throw DriverProviderError.missingFilePath }
             let path = (profile.filePath as NSString).expandingTildeInPath
             return SQLiteDriver(configuration: SQLiteConfiguration(path: path, readOnly: readOnly))
-        case .postgres, .mysql, .mariadb:
+        case .postgres:
+            return PostgresDriver(configuration: try Self.serverConfiguration(profile, password: password, database: database))
+        case .mysql, .mariadb:
             throw DriverProviderError.unsupportedEngine(profile.engine)
         }
+    }
+
+    /// Where a network driver connects, from a profile: a Unix socket when one is set, the host otherwise.
+    static func serverConfiguration(
+        _ profile: ConnectionProfile, password: String?, database: String?
+    ) throws -> ServerConfiguration {
+        let endpoint: TransportEndpoint
+        if !profile.socketPath.isEmpty {
+            endpoint = .unix(path: (profile.socketPath as NSString).expandingTildeInPath)
+        } else {
+            let host = profile.host.trimmingCharacters(in: .whitespaces)
+            guard !host.isEmpty, let port = profile.effectivePort else { throw DriverProviderError.missingHost }
+            endpoint = .tcp(host: host, port: port)
+        }
+        return ServerConfiguration(
+            endpoint: endpoint,
+            tls: TLSSettings(mode: profile.tlsMode, serverName: profile.host, caFile: profile.caFile),
+            user: profile.user, password: password, database: database ?? profile.database)
     }
 }
 
