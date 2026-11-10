@@ -51,6 +51,7 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSApplicationCategoryType: public.app-category.developer-tools
         NSHumanReadableCopyright: "© 2026 Romain Gallien. MIT License."
+        NSLocalNetworkUsageDescription: "Rowster connects to the database servers and SSH hosts you configure on your local network."
     settings:
       base:
         PRODUCT_NAME: Rowster

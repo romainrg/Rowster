@@ -13,7 +13,7 @@ xcodegen generate --quiet
 xcodebuild -project Rowster.xcodeproj -scheme RowsterScreenshots -configuration Debug \
   -destination 'platform=macOS' -derivedDataPath build -quiet build
 
-README_SCENES=(welcome)
+README_SCENES=(welcome data-grid filters inspector pending-changes editor structure unlocked)
 
 if [[ "${1:-}" == "--readme" ]]; then
   STAGE=build/readme-shots
