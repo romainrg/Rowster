@@ -12,6 +12,7 @@ All notable changes to Rowster are documented here. The format follows [Keep a C
 - Connections that must open read-only (production, or *Open read-only*) refuse every statement that is not a plain read, on the server and in the app.
 - Data grid: 300 rows per page by default, multi-column sort remembered per table (shift-click adds a column), column widths remembered, estimated and exact row counts, BLOBs shown by their size.
 - Copy a cell, or rows as tab-separated text, CSV, JSON, Markdown or `INSERT` statements.
+- Filter bar (⌘F): column, operator and value rows combined with AND or OR, a search across every column, a hand-written SQL condition, and *Show SQL*. No limit on the number of filters.
 - SQLite connections.
 - Demo mode (`--demo`): sample connections on an in-memory database, with no network, disk or Keychain access.
 - English and French.

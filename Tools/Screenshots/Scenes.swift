@@ -85,6 +85,20 @@ enum ScreenshotScenes {
                     try? await Task.sleep(for: .milliseconds(300))
                 }
             },
+            ScreenshotScene(name: "filters", title: DemoData.local.name, size: windowSize) {
+                await workspace(DemoData.local) { model in
+                    model.openTable(.init(ref: TableRef(name: "orders"), kind: .table), permanent: true)
+                    guard let orders = model.selectedTab?.table else { return }
+                    await orders.load()
+                    orders.filters = [
+                        FilterCondition(target: .column("status"), op: .isIn, value: "failed, cancelled"),
+                        FilterCondition(target: .column("total"), op: .greaterOrEqual, value: "100"),
+                        FilterCondition(target: .rawSQL, value: "note IS NOT NULL")
+                    ]
+                    orders.isFilterBarVisible = true
+                    await orders.applyFilters()
+                }
+            },
             ScreenshotScene(name: "workspace-password", title: DemoData.events.name, size: windowSize) {
                 var profile = DemoData.events
                 profile.passwordStorage = .askEveryTime

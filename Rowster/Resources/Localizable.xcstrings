@@ -51,6 +51,46 @@
         }
       }
     },
+    "<" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "<"
+          }
+        }
+      }
+    },
+    "=" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "="
+          }
+        }
+      }
+    },
+    ">" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ">"
+          }
+        }
+      }
+    },
+    "A filter has no value." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un filtre n'a pas de valeur."
+          }
+        }
+      }
+    },
     "A production connection always opens read-only. Writing is unlocked for one window at a time." : {
       "localizations" : {
         "fr" : {
@@ -71,12 +111,62 @@
         }
       }
     },
+    "Add Filter" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un filtre"
+          }
+        }
+      }
+    },
+    "All conditions" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toutes les conditions"
+          }
+        }
+      }
+    },
     "Another statement is still running on this connection." : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Une autre instruction est encore en cours sur cette connexion."
+          }
+        }
+      }
+    },
+    "Any column" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N'importe quelle colonne"
+          }
+        }
+      }
+    },
+    "Any condition" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Au moins une condition"
+          }
+        }
+      }
+    },
+    "Apply" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appliquer"
           }
         }
       }
@@ -201,6 +291,16 @@
         }
       }
     },
+    "Clear" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer"
+          }
+        }
+      }
+    },
     "Close %@" : {
       "localizations" : {
         "fr" : {
@@ -237,6 +337,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Couleur"
+          }
+        }
+      }
+    },
+    "Column" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colonne"
           }
         }
       }
@@ -287,6 +397,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Échec de la connexion"
+          }
+        }
+      }
+    },
+    "Copy" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier"
           }
         }
       }
@@ -501,6 +621,16 @@
         }
       }
     },
+    "Enabled" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activé"
+          }
+        }
+      }
+    },
     "Engine" : {
       "localizations" : {
         "fr" : {
@@ -567,6 +697,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filtrer les tables"
+          }
+        }
+      }
+    },
+    "Filters" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtres"
           }
         }
       }
@@ -697,6 +837,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Local"
+          }
+        }
+      }
+    },
+    "Match" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Correspondance"
           }
         }
       }
@@ -867,6 +1017,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "S'ouvre en lecture seule"
+          }
+        }
+      }
+    },
+    "Operator" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opérateur"
           }
         }
       }
@@ -1061,6 +1221,16 @@
         }
       }
     },
+    "Remove filter" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retirer le filtre"
+          }
+        }
+      }
+    },
     "Rename Group" : {
       "localizations" : {
         "fr" : {
@@ -1151,6 +1321,16 @@
         }
       }
     },
+    "SQL condition" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condition SQL"
+          }
+        }
+      }
+    },
     "SSH host" : {
       "localizations" : {
         "fr" : {
@@ -1211,6 +1391,16 @@
         }
       }
     },
+    "Second value" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seconde valeur"
+          }
+        }
+      }
+    },
     "Select a table in the sidebar, or press ⌘T for a new query." : {
       "localizations" : {
         "fr" : {
@@ -1227,6 +1417,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Serveur"
+          }
+        }
+      }
+    },
+    "Show SQL" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher le SQL"
           }
         }
       }
@@ -1331,6 +1531,16 @@
         }
       }
     },
+    "The SQL condition must be a single expression, without a semicolon." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La condition SQL doit être une seule expression, sans point-virgule."
+          }
+        }
+      }
+    },
     "The TLS handshake failed: %@" : {
       "localizations" : {
         "fr" : {
@@ -1357,6 +1567,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "La connexion est fermée."
+          }
+        }
+      }
+    },
+    "The filter is not valid." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le filtre n'est pas valide."
           }
         }
       }
@@ -1441,12 +1661,32 @@
         }
       }
     },
+    "Unknown column: %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colonne inconnue : %@"
+          }
+        }
+      }
+    },
     "User" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Utilisateur"
+          }
+        }
+      }
+    },
+    "Value" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valeur"
           }
         }
       }
@@ -1521,6 +1761,86 @@
         }
       }
     },
+    "a, b, c" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "a, b, c"
+          }
+        }
+      }
+    },
+    "and" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "et"
+          }
+        }
+      }
+    },
+    "between" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "entre"
+          }
+        }
+      }
+    },
+    "contains" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "contient"
+          }
+        }
+      }
+    },
+    "ends with" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "finit par"
+          }
+        }
+      }
+    },
+    "in list" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "dans la liste"
+          }
+        }
+      }
+    },
+    "is not null" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "n'est pas nul"
+          }
+        }
+      }
+    },
+    "is null" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "est nul"
+          }
+        }
+      }
+    },
     "of %lld" : {
       "localizations" : {
         "fr" : {
@@ -1537,6 +1857,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "sur environ %lld"
+          }
+        }
+      }
+    },
+    "starts with" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "commence par"
+          }
+        }
+      }
+    },
+    "≠" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≠"
+          }
+        }
+      }
+    },
+    "≤" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≤"
+          }
+        }
+      }
+    },
+    "≥" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≥"
           }
         }
       }
