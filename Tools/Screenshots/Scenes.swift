@@ -164,6 +164,35 @@ enum ScreenshotScenes {
                 guard let customers = model.selectedTab?.table else { return AnyView(EmptyView()) }
                 return AnyView(ChangePreviewSheet(model: customers))
             },
+            ScreenshotScene(name: "editor", title: DemoData.staging.name, size: windowSize) {
+                await workspace(DemoData.staging) { model in
+                    model.newQueryTab()
+                    guard case .query(let query)? = model.selectedTab?.content else { return }
+                    query.text = """
+                    -- Revenue by country, delivered orders only
+                    SELECT c.country, count(*) AS orders, round(sum(o.total), 2) AS revenue
+                    FROM orders o
+                    JOIN customers c ON c.id = o.customer_id
+                    WHERE o.status = 'delivered' AND o.total > 20
+                    GROUP BY c.country
+                    ORDER BY revenue DESC;
+
+                    SELECT name, price FROM products WHERE price > 50;
+
+                    SELECT * FROM missing_table;
+                    """
+                    await query.runAll()
+                    query.selectedResultID = query.results.first?.id
+                }
+            },
+            ScreenshotScene(name: "editor-error", title: DemoData.production.name, size: windowSize) {
+                await workspace(DemoData.production) { model in
+                    model.newQueryTab()
+                    guard case .query(let query)? = model.selectedTab?.content else { return }
+                    query.text = "UPDATE customers SET vip = 1 WHERE country = 'FR';"
+                    await query.runAll()
+                }
+            },
             ScreenshotScene(name: "workspace-password", title: DemoData.events.name, size: windowSize) {
                 var profile = DemoData.events
                 profile.passwordStorage = .askEveryTime

@@ -71,6 +71,16 @@
         }
       }
     },
+    "%lld rows affected" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld lignes affectées"
+          }
+        }
+      }
+    },
     "<" : {
       "localizations" : {
         "fr" : {
@@ -341,6 +351,16 @@
         }
       }
     },
+    "Cancelled." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annulé."
+          }
+        }
+      }
+    },
     "Cannot connect: %@" : {
       "localizations" : {
         "fr" : {
@@ -387,6 +407,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Effacer"
+          }
+        }
+      }
+    },
+    "Clear History" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer l'historique"
           }
         }
       }
@@ -731,6 +761,16 @@
         }
       }
     },
+    "Done" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminé"
+          }
+        }
+      }
+    },
     "Drop a file or choose one" : {
       "localizations" : {
         "fr" : {
@@ -931,6 +971,16 @@
         }
       }
     },
+    "History" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historique"
+          }
+        }
+      }
+    },
     "Host" : {
       "localizations" : {
         "fr" : {
@@ -1017,6 +1067,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Charger"
+          }
+        }
+      }
+    },
+    "Load More" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charger plus"
           }
         }
       }
@@ -1131,6 +1191,16 @@
         }
       }
     },
+    "No results yet" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas encore de résultat"
+          }
+        }
+      }
+    },
     "No row selected" : {
       "localizations" : {
         "fr" : {
@@ -1147,6 +1217,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aucune ligne"
+          }
+        }
+      }
+    },
+    "No statements" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune instruction"
           }
         }
       }
@@ -1197,6 +1277,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "Only the first %lld rows were fetched." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seules les %lld premières lignes ont été lues."
           }
         }
       }
@@ -1601,12 +1691,42 @@
         }
       }
     },
+    "Run" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exécuter"
+          }
+        }
+      }
+    },
+    "Run All" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout exécuter"
+          }
+        }
+      }
+    },
     "Run Anyway" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exécuter quand même"
+          }
+        }
+      }
+    },
+    "Run the statement under the cursor, or the selection" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exécuter l'instruction sous le curseur, ou la sélection"
           }
         }
       }
@@ -1667,6 +1787,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Condition SQL"
+          }
+        }
+      }
+    },
+    "SQL editor" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éditeur SQL"
           }
         }
       }
@@ -1737,6 +1867,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rechercher une connexion"
+          }
+        }
+      }
+    },
+    "Search history" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher dans l'historique"
           }
         }
       }
@@ -1827,6 +1967,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Préproduction"
+          }
+        }
+      }
+    },
+    "Statement %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instruction %lld"
           }
         }
       }
@@ -2447,6 +2597,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "≥"
+          }
+        }
+      }
+    },
+    "⌘↩ runs the statement under the cursor. ⇧⌘↩ runs every statement." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌘↩ exécute l'instruction sous le curseur. ⇧⌘↩ exécute toutes les instructions."
           }
         }
       }

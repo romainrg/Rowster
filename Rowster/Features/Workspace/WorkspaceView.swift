@@ -197,18 +197,6 @@ private struct DatabasePicker: View {
     }
 }
 
-/// Placeholder content of a query tab, replaced by the SQL editor.
-struct QueryTabView: View {
-    @Bindable var model: QueryTabModel
-
-    var body: some View {
-        TextEditor(text: $model.text)
-            .font(.system(size: 13, design: .monospaced))
-            .scrollContentBackground(.hidden)
-            .padding(8)
-    }
-}
-
 // MARK: - Commands
 
 struct WorkspaceFocusedKey: FocusedValueKey {
