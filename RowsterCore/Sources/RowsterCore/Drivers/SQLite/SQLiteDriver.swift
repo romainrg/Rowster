@@ -15,7 +15,19 @@ public struct SQLiteConfiguration: Sendable, Equatable {
 
     public static func memory() -> SQLiteConfiguration { SQLiteConfiguration(path: ":memory:") }
 
-    var isMemory: Bool { path == ":memory:" || path.isEmpty }
+    /// An in-memory database that every connection opened with the same name shares, for as long as one
+    /// of them stays open. Used by demo mode, where a window has several connections.
+    public static func sharedMemory(name: String) -> SQLiteConfiguration {
+        let safeName = name.filter { $0.isLetter || $0.isNumber || $0 == "-" }
+        var configuration = SQLiteConfiguration(path: "file:\(safeName)?mode=memory&cache=shared")
+        configuration.isSharedMemory = true
+        return configuration
+    }
+
+    /// The path is only read as a URI for a shared in-memory database, never for a path the user gave.
+    var isSharedMemory = false
+
+    var isMemory: Bool { isSharedMemory || path == ":memory:" || path.isEmpty }
 }
 
 /// SQLite through the `libsqlite3` of the SDK. Every call runs on one private serial queue.
@@ -50,6 +62,7 @@ public final class SQLiteDriver: DatabaseDriver, @unchecked Sendable {
 
     private func open() throws {
         var flags = SQLITE_OPEN_FULLMUTEX
+        if configuration.isSharedMemory { flags |= SQLITE_OPEN_URI }
         if configuration.isMemory {
             flags |= SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE
         } else if configuration.readOnly {
