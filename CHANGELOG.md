@@ -13,6 +13,8 @@ All notable changes to Rowster are documented here. The format follows [Keep a C
 - Data grid: 300 rows per page by default, multi-column sort remembered per table (shift-click adds a column), column widths remembered, estimated and exact row counts, BLOBs shown by their size.
 - Copy a cell, or rows as tab-separated text, CSV, JSON, Markdown or `INSERT` statements.
 - Filter bar (⌘F): column, operator and value rows combined with AND or OR, a search across every column, a hand-written SQL condition, and *Show SQL*. No limit on the number of filters.
+- Row inspector (⌥⌘I): every value of the selected row, a foldable tree for JSON, and binary values loaded on demand as an image or a hex dump.
+- Foreign keys: an arrow in the cell opens the referenced row, and hovering it previews that row.
 - SQLite connections.
 - Demo mode (`--demo`): sample connections on an in-memory database, with no network, disk or Keychain access.
 - English and French.

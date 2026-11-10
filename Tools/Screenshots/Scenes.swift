@@ -99,6 +99,26 @@ enum ScreenshotScenes {
                     await orders.applyFilters()
                 }
             },
+            ScreenshotScene(name: "inspector", title: DemoData.local.name, size: windowSize) {
+                await workspace(DemoData.local) { model in
+                    model.openTable(.init(ref: TableRef(name: "products"), kind: .table), permanent: true)
+                    guard let products = model.selectedTab?.table else { return }
+                    await products.load()
+                    products.isInspectorVisible = true
+                    products.gridSelectionChanged(rows: IndexSet(integer: 3), column: 1)
+                    await products.loadBlob(row: 3, column: 5)
+                }
+            },
+            ScreenshotScene(name: "foreign-key-preview", title: "orders", size: CGSize(width: 320, height: 220)) {
+                let env = AppEnvironment.demo()
+                let model = WorkspaceModel(profile: DemoData.local, env: env)
+                await model.start()
+                model.openTable(.init(ref: TableRef(name: "orders"), kind: .table), permanent: true)
+                guard let orders = model.selectedTab?.table else { return AnyView(EmptyView()) }
+                await orders.load()
+                guard let preview = await orders.gridForeignKeyPreview(row: 0, column: 1) else { return AnyView(EmptyView()) }
+                return AnyView(ForeignKeyPreviewView(preview: preview).frame(maxWidth: .infinity, maxHeight: .infinity))
+            },
             ScreenshotScene(name: "workspace-password", title: DemoData.events.name, size: windowSize) {
                 var profile = DemoData.events
                 profile.passwordStorage = .askEveryTime

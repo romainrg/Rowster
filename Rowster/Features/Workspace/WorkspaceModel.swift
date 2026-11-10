@@ -146,6 +146,9 @@ final class WorkspaceModel {
         let model = TableTabModel(
             ref: item.ref, kind: item.kind, session: session, dialect: dialect, connectionID: profile.id,
             viewState: env.viewState, activity: activity)
+        model.onFollowForeignKey = { [weak self] table, column, value in
+            self?.showRow(in: table, column: column, value: value)
+        }
         let tab = WorkspaceTab(content: .table(model), isPreview: !permanent)
         if let previewIndex = tabs.firstIndex(where: \.isPreview) {
             tabs[previewIndex] = tab
@@ -155,6 +158,13 @@ final class WorkspaceModel {
             tabs.append(tab)
         }
         selectedTabID = tab.id
+    }
+
+    /// Follows a foreign key: opens the referenced table filtered on the key value.
+    private func showRow(in table: TableRef, column: String, value: SQLValue) {
+        openTable(SidebarItem(ref: table, kind: .table), permanent: true)
+        guard let target = selectedTab?.table, target.ref == table else { return }
+        Task { await target.setFilter(column: column, equals: value) }
     }
 
     func newQueryTab() {

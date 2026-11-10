@@ -32,9 +32,17 @@ protocol GridDataSource: AnyObject {
     func gridCommit(text: String, row: Int, column: Int)
     func gridDeleteSelection()
     func gridFollowForeignKey(row: Int, column: Int)
+    func gridForeignKeyPreview(row: Int, column: Int) async -> ForeignKeyPreview?
+}
+
+/// The row a foreign key points to, shown when hovering the arrow of the cell.
+struct ForeignKeyPreview {
+    let table: String
+    let fields: [(name: String, text: String, isNull: Bool)]
 }
 
 extension GridDataSource {
+    func gridForeignKeyPreview(row: Int, column: Int) async -> ForeignKeyPreview? { nil }
     func gridState(row: Int, column: Int) -> GridCellState { .normal }
     var gridSort: [SortTerm] { [] }
     func gridToggleSort(column: Int, additive: Bool) {}
@@ -195,8 +203,43 @@ final class GridCoordinator: NSObject, NSTableViewDataSource, NSTableViewDelegat
             value: value, kind: description.kind, state: source.gridState(row: row, column: column),
             isActive: column == activeColumn && tableView.selectedRowIndexes == IndexSet(integer: row),
             showsArrow: description.hasForeignKey && !value.isNull)
-        cell.onArrow = { [weak self] in self?.source.gridFollowForeignKey(row: row, column: column) }
+        cell.onArrow = { [weak self] in
+            self?.hidePreview()
+            self?.source.gridFollowForeignKey(row: row, column: column)
+        }
+        cell.onArrowHover = { [weak self, weak cell] isInside in
+            guard let self, let cell else { return }
+            if isInside { showPreview(row: row, column: column, anchor: cell.arrowView) } else { hidePreview() }
+        }
         return cell
+    }
+
+    // MARK: - Foreign key preview
+
+    private var previewTask: Task<Void, Never>?
+    private var previewPopover: NSPopover?
+
+    /// Shows the referenced row after a short pause over the arrow, so a passing pointer loads nothing.
+    private func showPreview(row: Int, column: Int, anchor: NSView) {
+        previewTask?.cancel()
+        previewTask = Task { [weak self, weak anchor] in
+            try? await Task.sleep(for: .milliseconds(350))
+            guard !Task.isCancelled, let self, let preview = await source.gridForeignKeyPreview(row: row, column: column),
+                  !Task.isCancelled, let anchor, anchor.window != nil else { return }
+            let popover = NSPopover()
+            popover.behavior = .semitransient
+            popover.animates = false
+            popover.contentViewController = NSHostingController(rootView: ForeignKeyPreviewView(preview: preview))
+            popover.show(relativeTo: anchor.bounds, of: anchor, preferredEdge: .maxY)
+            previewPopover = popover
+        }
+    }
+
+    private func hidePreview() {
+        previewTask?.cancel()
+        previewTask = nil
+        previewPopover?.close()
+        previewPopover = nil
     }
 
     // MARK: - Delegate
@@ -328,8 +371,10 @@ final class GridTableView: NSTableView {
 /// One cell: a single-line label, laid out by frame, with an optional arrow for a foreign key.
 final class GridCellView: NSView {
     let label = NSTextField(labelWithString: "")
-    private let arrow = NSButton()
+    private let arrow = HoverButton()
     var onArrow: (() -> Void)?
+    var onArrowHover: ((Bool) -> Void)?
+    var arrowView: NSView { arrow }
 
     private static let font = NSFont.systemFont(ofSize: 12)
     private static let numberFont = NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .regular)
@@ -350,6 +395,7 @@ final class GridCellView: NSView {
         arrow.action = #selector(arrowClicked)
         arrow.isHidden = true
         arrow.setAccessibilityLabel(String(localized: "Open the referenced row"))
+        arrow.onHover = { [weak self] isInside in self?.onArrowHover?(isInside) }
         addSubview(arrow)
     }
 
@@ -408,6 +454,50 @@ final class GridCellView: NSView {
         label.drawsBackground = true
         label.backgroundColor = .textBackgroundColor
         label.delegate = delegate
+    }
+}
+
+/// A button that reports when the pointer enters and leaves it.
+final class HoverButton: NSButton {
+    var onHover: ((Bool) -> Void)?
+    private var tracking: NSTrackingArea?
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let tracking { removeTrackingArea(tracking) }
+        let area = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInKeyWindow], owner: self)
+        addTrackingArea(area)
+        tracking = area
+    }
+
+    override func mouseEntered(with event: NSEvent) { onHover?(true) }
+    override func mouseExited(with event: NSEvent) { onHover?(false) }
+}
+
+/// The referenced row, as a compact list of its values.
+struct ForeignKeyPreviewView: View {
+    let preview: ForeignKeyPreview
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Label { Text(verbatim: preview.table) } icon: { Image(systemName: "tablecells") }
+                .font(.system(size: 12, weight: .semibold))
+            Divider()
+            Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 10, verticalSpacing: 3) {
+                ForEach(Array(preview.fields.prefix(14).enumerated()), id: \.offset) { _, field in
+                    GridRow {
+                        Text(verbatim: field.name).foregroundStyle(.secondary)
+                        Text(verbatim: field.text)
+                            .italic(field.isNull)
+                            .foregroundStyle(field.isNull ? .tertiary : .primary)
+                            .lineLimit(2)
+                    }
+                }
+            }
+            .font(.system(size: 11.5))
+        }
+        .padding(12)
+        .frame(minWidth: 220, maxWidth: 380, alignment: .leading)
     }
 }
 

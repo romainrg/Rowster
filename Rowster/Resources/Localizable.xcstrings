@@ -801,6 +801,16 @@
         }
       }
     },
+    "Image preview" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aperçu de l'image"
+          }
+        }
+      }
+    },
     "Keychain: %@" : {
       "localizations" : {
         "fr" : {
@@ -817,6 +827,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Laisser vide pour garder le mot de passe enregistré"
+          }
+        }
+      }
+    },
+    "Load" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charger"
           }
         }
       }
@@ -931,6 +951,16 @@
         }
       }
     },
+    "No row selected" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune ligne sélectionnée"
+          }
+        }
+      }
+    },
     "No rows" : {
       "localizations" : {
         "fr" : {
@@ -987,6 +1017,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ouvrir"
+          }
+        }
+      }
+    },
+    "Open Referenced Row" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir la ligne référencée"
           }
         }
       }
@@ -1151,6 +1191,16 @@
         }
       }
     },
+    "Primary key" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clé primaire"
+          }
+        }
+      }
+    },
     "Production" : {
       "localizations" : {
         "fr" : {
@@ -1267,6 +1317,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réessayer"
+          }
+        }
+      }
+    },
+    "Row inspector" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inspecteur de ligne"
           }
         }
       }
@@ -1407,6 +1467,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sélectionnez une table dans la barre latérale, ou appuyez sur ⌘T pour une nouvelle requête."
+          }
+        }
+      }
+    },
+    "Select one row to see all its values." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionnez une ligne pour voir toutes ses valeurs."
           }
         }
       }
@@ -1647,6 +1717,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cette instruction doit être confirmée avant de s'exécuter."
+          }
+        }
+      }
+    },
+    "This value cannot be loaded: the table has no primary key." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette valeur ne peut pas être chargée : la table n'a pas de clé primaire."
           }
         }
       }

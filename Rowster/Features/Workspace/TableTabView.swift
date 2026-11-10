@@ -14,7 +14,12 @@ struct TableTabView: View {
             if let error = model.errorMessage {
                 ErrorBanner(message: error) { model.errorMessage = nil }
             }
-            DataGridView(source: model, revision: model.gridRevision, structureRevision: model.gridStructureRevision)
+            HSplitView {
+                DataGridView(source: model, revision: model.gridRevision, structureRevision: model.gridStructureRevision)
+                    .frame(minWidth: 320, maxWidth: .infinity, maxHeight: .infinity)
+                    .layoutPriority(1)
+                if model.isInspectorVisible { InspectorView(model: model) }
+            }
             Divider()
             footer
         }
@@ -78,6 +83,15 @@ struct TableTabView: View {
             .disabled(model.isLoading)
             .help(Text("Reload rows"))
             .accessibilityLabel(Text("Reload rows"))
+            Button {
+                model.isInspectorVisible.toggle()
+            } label: {
+                Image(systemName: "sidebar.right")
+            }
+            .foregroundStyle(model.isInspectorVisible ? Color.accentColor : Color.secondary)
+            .keyboardShortcut("i", modifiers: [.command, .option])
+            .help(Text("Row inspector"))
+            .accessibilityLabel(Text("Row inspector"))
         }
         .font(.system(size: 12))
         .buttonStyle(.borderless)
