@@ -63,10 +63,12 @@ enum ScreenshotTool {
         controller.sceneBridgingOptions = .all
         controller.sizingOptions = []
         let window = NSWindow(contentViewController: controller)
-        window.styleMask = [.titled, .fullSizeContentView]
+        window.styleMask = [.titled]
         window.appearance = appearance
         window.title = "Rowster"
-        window.setFrame(CGRect(origin: CGPoint(x: -20_000, y: -20_000), size: size), display: true)
+        // The scene size is the content size: the title bar is added around it, as in the app.
+        window.setContentSize(size)
+        window.setFrameOrigin(CGPoint(x: -20_000, y: -20_000))
         window.orderFrontRegardless()
         let hosting = controller.view
         for _ in 0..<8 {
@@ -75,13 +77,14 @@ enum ScreenshotTool {
             try await Task.sleep(for: .milliseconds(150))
         }
 
+        let frameView = hosting.superview ?? hosting
+        let frameSize = frameView.bounds.size
         guard let rep = NSBitmapImageRep(
-            bitmapDataPlanes: nil, pixelsWide: Int(size.width * scale), pixelsHigh: Int(size.height * scale),
+            bitmapDataPlanes: nil, pixelsWide: Int(frameSize.width * scale), pixelsHigh: Int(frameSize.height * scale),
             bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false,
             colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0
         ) else { throw RenderError(message: "bitmap \(size)") }
-        rep.size = size
-        let frameView = hosting.superview ?? hosting
+        rep.size = frameSize
         frameView.cacheDisplay(in: frameView.bounds, to: rep)
         window.orderOut(nil)
         guard let png = rep.representation(using: .png, properties: [:]) else {
