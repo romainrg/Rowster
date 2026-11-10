@@ -139,11 +139,18 @@ final class ConnectionsModel {
     /// Opens the connection read-only, reads the server version and closes.
     func test(_ profile: ConnectionProfile, typedPassword: String) async -> TestOutcome {
         let password = typedPassword.isEmpty ? storedPassword(for: profile) : typedPassword
+        // A test opens read-only, through the tunnel when there is one, and runs nothing: no bootstrap SQL.
+        var readOnly = profile
+        readOnly.opensReadOnly = true
+        let session = env.makeSession(readOnly, password: password, runsBootstrap: false)
         do {
-            let version = try await env.drivers.test(profile, password: password)
+            try await session.open()
+            let version = await session.serverVersion
+            await session.close()
             return .success(version ?? profile.engine.displayName)
         } catch {
-            return .failure(ErrorText.describe(error))
+            await session.close()
+            return .failure(WorkspaceModel.describe(error))
         }
     }
 

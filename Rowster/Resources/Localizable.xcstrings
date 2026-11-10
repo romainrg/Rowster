@@ -1171,6 +1171,16 @@
         }
       }
     },
+    "No" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non"
+          }
+        }
+      }
+    },
     "No connections yet" : {
       "localizations" : {
         "fr" : {
@@ -1801,6 +1811,16 @@
         }
       }
     },
+    "SSH" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SSH"
+          }
+        }
+      }
+    },
     "SSH host" : {
       "localizations" : {
         "fr" : {
@@ -2077,6 +2097,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "La condition SQL doit être une seule expression, sans point-virgule."
+          }
+        }
+      }
+    },
+    "The SSH settings are not valid: “%@”." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les réglages SSH ne sont pas valides : « %@ »."
+          }
+        }
+      }
+    },
+    "The SSH tunnel could not be opened: %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le tunnel SSH n'a pas pu être ouvert : %@"
+          }
+        }
+      }
+    },
+    "The SSH tunnel took too long to open." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'ouverture du tunnel SSH a pris trop de temps."
           }
         }
       }
@@ -2447,6 +2497,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jaune"
+          }
+        }
+      }
+    },
+    "Yes" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oui"
           }
         }
       }

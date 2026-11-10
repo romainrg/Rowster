@@ -1,7 +1,18 @@
 import RowsterCore
 import SwiftUI
 
+/// The entry point. OpenSSH starts this same executable to ask a question (`SSH_ASKPASS`): it then only
+/// forwards the question to the running app and prints the answer, without starting any interface.
 @main
+enum Main {
+    static func main() {
+        if let socket = ProcessInfo.processInfo.environment[AskpassClient.socketVariable] {
+            exit(AskpassClient.runHelper(socketPath: socket))
+        }
+        RowsterApp.main()
+    }
+}
+
 struct RowsterApp: App {
     @State private var environment: AppEnvironment
     @State private var connections: ConnectionsModel

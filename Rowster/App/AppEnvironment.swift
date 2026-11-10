@@ -19,6 +19,16 @@ struct AppEnvironment {
     var authenticator: any UnlockAuthenticating
     /// The statements run in the editor. Never their results.
     var history: any HistoryStoring
+    /// Opens SSH tunnels. `nil` in demo mode, which never starts a process.
+    var tunnels: (any TunnelProviding)?
+    /// Shows the questions OpenSSH asks while a tunnel opens.
+    var askpass: AskpassHandler?
+
+    /// A session for a connection, with everything it may need to reach its server.
+    func makeSession(_ profile: ConnectionProfile, password: String?, runsBootstrap: Bool = true) -> Session {
+        Session(
+            profile: profile, password: password, provider: drivers, tunnels: tunnels, prompt: askpass, runsBootstrap: runsBootstrap)
+    }
 
     @MainActor
     static func live() -> AppEnvironment {
@@ -29,7 +39,9 @@ struct AppEnvironment {
             drivers: LiveDriverProvider(),
             viewState: FileViewStateStore(directory: FileViewStateStore.defaultDirectory()),
             authenticator: SystemAuthenticator(),
-            history: FileHistoryStore(directory: FileHistoryStore.defaultDirectory()))
+            history: FileHistoryStore(directory: FileHistoryStore.defaultDirectory()),
+            tunnels: SSHTunnelProvider(askpassExecutable: Bundle.main.executablePath),
+            askpass: { request in await AskpassPanel.ask(request) })
     }
 
     /// Sample connections on an in-memory database: no network, no disk, no Keychain.
@@ -42,7 +54,9 @@ struct AppEnvironment {
             drivers: DemoDriverProvider(),
             viewState: MemoryViewStateStore(),
             authenticator: DemoAuthenticator(),
-            history: MemoryHistoryStore())
+            history: MemoryHistoryStore(),
+            tunnels: nil,
+            askpass: nil)
     }
 
     @MainActor

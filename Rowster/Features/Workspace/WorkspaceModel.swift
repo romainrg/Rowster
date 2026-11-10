@@ -63,7 +63,7 @@ final class WorkspaceModel {
 
     func connect(password: String?) async {
         phase = .connecting
-        let session = Session(profile: profile, password: password, provider: env.drivers)
+        let session = env.makeSession(profile, password: password)
         do {
             try await session.open()
         } catch {
@@ -269,6 +269,12 @@ final class WorkspaceModel {
             return String(localized: "This statement must be confirmed before it runs.")
         case SessionError.notOpen:
             return String(localized: "The connection is closed.")
+        case SSHTunnelError.invalid(let value):
+            return String(localized: "The SSH settings are not valid: “\(value)”.")
+        case SSHTunnelError.failed(let message):
+            return String(localized: "The SSH tunnel could not be opened: \(message)")
+        case SSHTunnelError.timedOut:
+            return String(localized: "The SSH tunnel took too long to open.")
         default:
             return ErrorText.describe(error)
         }
