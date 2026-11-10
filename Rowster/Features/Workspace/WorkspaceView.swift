@@ -192,24 +192,6 @@ private struct DatabasePicker: View {
     }
 }
 
-/// Placeholder content of a table tab, replaced by the data grid.
-struct TableTabView: View {
-    let model: TableTabModel
-
-    var body: some View {
-        ContentUnavailableView {
-            Label { Text(verbatim: model.ref.displayName) } icon: { Image(systemName: "tablecells") }
-        } description: {
-            if let error = model.errorMessage {
-                Text(verbatim: error)
-            } else if let structure = model.structure {
-                Text("\(structure.columns.count) columns")
-            }
-        }
-        .task { await model.loadStructure() }
-    }
-}
-
 /// Placeholder content of a query tab, replaced by the SQL editor.
 struct QueryTabView: View {
     @Bindable var model: QueryTabModel

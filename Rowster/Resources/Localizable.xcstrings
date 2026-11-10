@@ -31,6 +31,26 @@
         }
       }
     },
+    "%lld per page" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld par page"
+          }
+        }
+      }
+    },
+    "%lld rows" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld lignes"
+          }
+        }
+      }
+    },
     "A production connection always opens read-only. Writing is unlocked for one window at a time." : {
       "localizations" : {
         "fr" : {
@@ -271,12 +291,32 @@
         }
       }
     },
+    "Copy Cell" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier la cellule"
+          }
+        }
+      }
+    },
     "Copy Name" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copier le nom"
+          }
+        }
+      }
+    },
+    "Copy Rows As" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier les lignes en"
           }
         }
       }
@@ -291,12 +331,32 @@
         }
       }
     },
+    "Count rows" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compter les lignes"
+          }
+        }
+      }
+    },
     "Create a connection, or paste a URL such as postgres://user@host/database in the form." : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Créez une connexion, ou collez une URL comme postgres://user@host/database dans le formulaire."
+          }
+        }
+      }
+    },
+    "Data grid" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grille de données"
           }
         }
       }
@@ -387,6 +447,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Désactivé"
+          }
+        }
+      }
+    },
+    "Dismiss" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
           }
         }
       }
@@ -611,6 +681,16 @@
         }
       }
     },
+    "Loading…" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargement…"
+          }
+        }
+      }
+    },
     "Local" : {
       "localizations" : {
         "fr" : {
@@ -671,6 +751,16 @@
         }
       }
     },
+    "Next page" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page suivante"
+          }
+        }
+      }
+    },
     "No connections yet" : {
       "localizations" : {
         "fr" : {
@@ -687,6 +777,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sans étiquette"
+          }
+        }
+      }
+    },
+    "No rows" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune ligne"
           }
         }
       }
@@ -747,6 +847,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ouvrir en lecture seule"
+          }
+        }
+      }
+    },
+    "Open the referenced row" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir la ligne référencée"
           }
         }
       }
@@ -871,6 +981,16 @@
         }
       }
     },
+    "Previous page" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page précédente"
+          }
+        }
+      }
+    },
     "Production" : {
       "localizations" : {
         "fr" : {
@@ -917,6 +1037,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rouge"
+          }
+        }
+      }
+    },
+    "Reload rows" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recharger les lignes"
           }
         }
       }
@@ -971,6 +1101,16 @@
         }
       }
     },
+    "Rows %lld–%lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lignes %lld à %lld"
+          }
+        }
+      }
+    },
     "Rowster" : {
       "localizations" : {
         "fr" : {
@@ -987,6 +1127,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rowster utilise l'OpenSSH du système : votre ~/.ssh/config, les agents et ProxyJump s'appliquent."
+          }
+        }
+      }
+    },
+    "Runs an exact count, which can be slow on a large table" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lance un comptage exact, qui peut être lent sur une grande table"
+          }
+        }
+      }
+    },
+    "SQL INSERT" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT SQL"
           }
         }
       }
@@ -1127,6 +1287,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "TLS"
+          }
+        }
+      }
+    },
+    "Tab-separated" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Séparé par des tabulations"
           }
         }
       }
@@ -1347,6 +1517,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jaune"
+          }
+        }
+      }
+    },
+    "of %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sur %lld"
+          }
+        }
+      }
+    },
+    "of about %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sur environ %lld"
           }
         }
       }

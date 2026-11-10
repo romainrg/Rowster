@@ -73,6 +73,18 @@ enum ScreenshotScenes {
                     model.selectedTabID = model.tabs.first?.id
                 }
             },
+            ScreenshotScene(name: "data-grid", title: DemoData.staging.name, size: windowSize) {
+                await workspace(DemoData.staging) { model in
+                    model.openTable(.init(ref: TableRef(name: "customers"), kind: .table), permanent: true)
+                    model.openTable(.init(ref: TableRef(name: "orders"), kind: .table), permanent: true)
+                    guard let orders = model.selectedTab?.table else { return }
+                    await orders.load()
+                    orders.gridToggleSort(column: 2, additive: false)
+                    orders.gridToggleSort(column: 3, additive: true)
+                    orders.gridToggleSort(column: 3, additive: true)
+                    try? await Task.sleep(for: .milliseconds(300))
+                }
+            },
             ScreenshotScene(name: "workspace-password", title: DemoData.events.name, size: windowSize) {
                 var profile = DemoData.events
                 profile.passwordStorage = .askEveryTime

@@ -13,6 +13,8 @@ struct AppEnvironment {
     var secrets: any SecretStore
     /// The only way a connection to a database is created.
     var drivers: any DriverProviding
+    /// Sort order and column widths remembered per table.
+    var viewState: any ViewStateStoring
 
     @MainActor
     static func live() -> AppEnvironment {
@@ -20,7 +22,8 @@ struct AppEnvironment {
             isDemo: false,
             connections: FileConnectionStore(url: FileConnectionStore.defaultURL()),
             secrets: KeychainSecretStore(),
-            drivers: LiveDriverProvider())
+            drivers: LiveDriverProvider(),
+            viewState: FileViewStateStore(directory: FileViewStateStore.defaultDirectory()))
     }
 
     /// Sample connections on an in-memory database: no network, no disk, no Keychain.
@@ -30,7 +33,8 @@ struct AppEnvironment {
             isDemo: true,
             connections: MemoryConnectionStore(DemoData.library),
             secrets: MemorySecretStore(),
-            drivers: DemoDriverProvider())
+            drivers: DemoDriverProvider(),
+            viewState: MemoryViewStateStore())
     }
 
     @MainActor
