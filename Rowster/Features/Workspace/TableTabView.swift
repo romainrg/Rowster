@@ -38,6 +38,22 @@ struct TableTabView: View {
             .keyboardShortcut("f")
             .help(Text("Filters"))
             .accessibilityLabel(Text("Filters"))
+            if model.kind == .table {
+                Button {
+                    model.addRow()
+                } label: {
+                    Image(systemName: "plus")
+                }
+                .help(Text("Add a row"))
+                .accessibilityLabel(Text("Add a row"))
+            }
+            if model.hasPendingChanges {
+                pendingControls
+            } else if let notice = model.notice {
+                Label { Text(verbatim: notice) } icon: { Image(systemName: "info.circle") }
+                    .foregroundStyle(.orange)
+                    .lineLimit(1)
+            }
             if model.rows.isEmpty {
                 Text(model.isLoading ? "Loading…" : "No rows").foregroundStyle(.secondary)
             } else {
@@ -100,6 +116,27 @@ struct TableTabView: View {
         .background(.bar)
     }
 
+    /// Shown while changes are pending: how many, and the only three things that can be done with them.
+    private var pendingControls: some View {
+        HStack(spacing: 8) {
+            Text("\(model.pendingCount) pending changes")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.orange)
+            Button("Preview SQL") { model.isPreviewingChanges = true }
+                .keyboardShortcut("p", modifiers: [.command, .shift])
+            Button("Commit") { Task { await model.commitChanges() } }
+                .keyboardShortcut("s")
+                .disabled(model.isCommitting)
+            Button("Discard") { model.discardChanges() }
+            if let notice = model.notice {
+                Text(verbatim: notice).foregroundStyle(.orange).lineLimit(1)
+            }
+        }
+        .sheet(isPresented: $model.isPreviewingChanges) {
+            ChangePreviewSheet(model: model)
+        }
+    }
+
     @ViewBuilder private var countView: some View {
         if let exact = model.exactCount {
             Text("of \(exact)").foregroundStyle(.secondary).monospacedDigit()
@@ -114,6 +151,48 @@ struct TableTabView: View {
                     .help(Text("Runs an exact count, which can be slow on a large table"))
             }
         }
+    }
+}
+
+/// The statements a commit would run, shown before they run.
+struct ChangePreviewSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let model: TableTabModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("\(model.pendingCount) pending changes on \(model.ref.displayName)").font(.headline)
+            Text("These statements run in one transaction. If one fails, none is applied.")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+            ScrollView {
+                Text(verbatim: model.previewSQL)
+                    .font(.system(size: 12, design: .monospaced))
+                    .textSelection(.enabled)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(10)
+            }
+            .frame(minHeight: 140, maxHeight: 320)
+            .background(Theme.softFill, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(Theme.softStroke))
+            HStack {
+                Button("Copy") {
+                    NSPasteboard.general.clearContents()
+                    NSPasteboard.general.setString(model.previewSQL, forType: .string)
+                }
+                .buttonStyle(.soft)
+                Spacer()
+                Button("Close", role: .cancel) { dismiss() }
+                    .buttonStyle(.soft)
+                    .keyboardShortcut(.cancelAction)
+                Button("Commit") { Task { await model.commitChanges() } }
+                    .buttonStyle(.gradient)
+                    .keyboardShortcut(.defaultAction)
+                    .disabled(model.isCommitting)
+            }
+        }
+        .padding(20)
+        .frame(width: 620)
     }
 }
 

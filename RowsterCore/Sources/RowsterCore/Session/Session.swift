@@ -6,6 +6,10 @@ public enum SessionError: Error, Equatable, Sendable {
     case readOnly(verb: String)
     /// The statement is destructive and was not confirmed by the user.
     case needsConfirmation(StatementInfo.Hazard)
+    /// Changes cannot be committed while a transaction the user opened is in progress.
+    case transactionInProgress
+    /// A statement of a commit did not affect exactly one row; everything was rolled back.
+    case unexpectedRowCount(statement: Int, affected: Int?)
 }
 
 /// The connections of one work window.
@@ -144,6 +148,33 @@ public actor Session {
             return (result, try await cursor.close())
         } catch {
             _ = try? await cursor.close()
+            throw error
+        }
+    }
+
+    /// Runs the statements of a change set in **one transaction**. Each statement must affect exactly one
+    /// row; on any error, or any other row count, everything is rolled back and nothing is kept.
+    public func commit(_ statements: [SQLFragment]) async throws {
+        guard let primary else { throw SessionError.notOpen }
+        guard !statements.isEmpty else { return }
+        for statement in statements {
+            try Self.check(statement.sql, dialect: primary.dialect, readOnly: isReadOnly, confirmed: false)
+        }
+        await acquirePrimary()
+        defer { releasePrimary() }
+        guard await primary.transactionState == .idle else { throw SessionError.transactionInProgress }
+
+        try await primary.run("BEGIN")
+        do {
+            for (index, statement) in statements.enumerated() {
+                let summary = try await primary.run(statement.sql, parameters: statement.parameters)
+                guard summary.rowsAffected == 1 else {
+                    throw SessionError.unexpectedRowCount(statement: index, affected: summary.rowsAffected)
+                }
+            }
+            try await primary.run("COMMIT")
+        } catch {
+            _ = try? await primary.run("ROLLBACK")
             throw error
         }
     }

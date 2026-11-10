@@ -135,24 +135,8 @@ public struct FilterBuilder: Sendable {
         return "\(operand) \(dialect.caseInsensitiveLike) \(dialect.placeholder(parameters.count)) ESCAPE '!'"
     }
 
-    /// Numbers and booleans are bound with their own type when the text reads as one; anything else is
-    /// bound as text and left to the server to convert or reject.
     private func typed(_ text: String, for column: ColumnDescription) -> SQLValue {
-        switch column.kind {
-        case .integer:
-            if let number = Int64(text) { return .integer(number) }
-        case .decimal:
-            if let number = Double(text), number.isFinite { return .double(number) }
-        case .boolean:
-            switch text.lowercased() {
-            case "true", "t", "yes", "1": return .bool(true)
-            case "false", "f", "no", "0": return .bool(false)
-            default: break
-            }
-        default:
-            break
-        }
-        return .text(text)
+        SQLValue.typed(text, as: column.kind)
     }
 
     /// A raw condition is refused when it could end the WHERE clause it is placed in: a semicolon,

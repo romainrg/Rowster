@@ -59,6 +59,23 @@ enum ScreenshotScenes {
 
     private static let windowSize = CGSize(width: 1180, height: 720)
 
+    /// Opens the customers table and makes one edit, one deletion and one new row, without committing.
+    @MainActor
+    private static func pendingChanges(_ model: WorkspaceModel) async {
+        model.openTable(.init(ref: TableRef(name: "customers"), kind: .table), permanent: true)
+        guard let customers = model.selectedTab?.table else { return }
+        await customers.load()
+        customers.gridCommit(text: "Ada Lovelace", row: 0, column: 1)
+        customers.gridCommit(text: "1", row: 3, column: 4)
+        customers.gridSelectionChanged(rows: IndexSet(integer: 5), column: nil)
+        customers.gridDeleteSelection()
+        customers.addRow()
+        customers.gridCommit(text: "Grace O'Neil", row: customers.gridRowCount - 1, column: 1)
+        customers.gridCommit(text: "grace@example.com", row: customers.gridRowCount - 1, column: 2)
+        customers.gridCommit(text: "IE", row: customers.gridRowCount - 1, column: 3)
+        customers.gridCommit(text: "2026-11-02 09:00:00", row: customers.gridRowCount - 1, column: 5)
+    }
+
     @MainActor
     private static var workspaceScenes: [ScreenshotScene] {
         [
@@ -135,6 +152,17 @@ enum ScreenshotScenes {
             },
             ScreenshotScene(name: "settings", title: "Rowster", size: CGSize(width: 480, height: 360)) {
                 AnyView(SettingsView().environment(\.appEnvironment, AppEnvironment.demo()))
+            },
+            ScreenshotScene(name: "pending-changes", title: DemoData.local.name, size: windowSize) {
+                await workspace(DemoData.local) { model in await pendingChanges(model) }
+            },
+            ScreenshotScene(name: "change-preview", title: DemoData.local.name, size: CGSize(width: 620, height: 420)) {
+                let env = AppEnvironment.demo()
+                let model = WorkspaceModel(profile: DemoData.local, env: env)
+                await model.start()
+                await pendingChanges(model)
+                guard let customers = model.selectedTab?.table else { return AnyView(EmptyView()) }
+                return AnyView(ChangePreviewSheet(model: customers))
             },
             ScreenshotScene(name: "workspace-password", title: DemoData.events.name, size: windowSize) {
                 var profile = DemoData.events

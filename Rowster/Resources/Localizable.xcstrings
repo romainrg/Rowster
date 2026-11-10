@@ -31,6 +31,26 @@
         }
       }
     },
+    "%lld pending changes" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld modifications en attente"
+          }
+        }
+      }
+    },
+    "%lld pending changes on %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld modifications en attente sur %@"
+          }
+        }
+      }
+    },
     "%lld per page" : {
       "localizations" : {
         "fr" : {
@@ -121,12 +141,62 @@
         }
       }
     },
+    "A row has no usable key and cannot be changed." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une ligne n'a pas de clé utilisable et ne peut pas être modifiée."
+          }
+        }
+      }
+    },
+    "A transaction is open in this window. Commit or roll it back before committing these changes." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une transaction est ouverte dans cette fenêtre. Validez-la ou annulez-la avant de valider ces modifications."
+          }
+        }
+      }
+    },
+    "A value with several lines cannot be edited in the grid." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une valeur de plusieurs lignes ne peut pas être modifiée dans la grille."
+          }
+        }
+      }
+    },
+    "A view cannot be edited." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une vue ne peut pas être modifiée."
+          }
+        }
+      }
+    },
     "Add Filter" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajouter un filtre"
+          }
+        }
+      }
+    },
+    "Add a row" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter une ligne"
           }
         }
       }
@@ -207,6 +277,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Automatique"
+          }
+        }
+      }
+    },
+    "Binary values cannot be edited." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les valeurs binaires ne peuvent pas être modifiées."
           }
         }
       }
@@ -311,6 +391,16 @@
         }
       }
     },
+    "Close" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
+          }
+        }
+      }
+    },
     "Close %@" : {
       "localizations" : {
         "fr" : {
@@ -357,6 +447,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Colonne"
+          }
+        }
+      }
+    },
+    "Commit" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valider"
+          }
+        }
+      }
+    },
+    "Commit or discard the pending changes first." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Validez ou abandonnez d'abord les modifications en attente."
           }
         }
       }
@@ -541,6 +651,16 @@
         }
       }
     },
+    "Delete Rows" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les lignes"
+          }
+        }
+      }
+    },
     "Delete “%@”?" : {
       "localizations" : {
         "fr" : {
@@ -591,6 +711,16 @@
         }
       }
     },
+    "Discard" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abandonner"
+          }
+        }
+      }
+    },
     "Dismiss" : {
       "localizations" : {
         "fr" : {
@@ -627,6 +757,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dupliquer"
+          }
+        }
+      }
+    },
+    "Duplicate Row" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dupliquer la ligne"
           }
         }
       }
@@ -1041,6 +1181,16 @@
         }
       }
     },
+    "Nothing was changed." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien n'a été modifié."
+          }
+        }
+      }
+    },
     "OK" : {
       "localizations" : {
         "fr" : {
@@ -1221,6 +1371,16 @@
         }
       }
     },
+    "Preview SQL" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aperçu du SQL"
+          }
+        }
+      }
+    },
     "Previous page" : {
       "localizations" : {
         "fr" : {
@@ -1367,6 +1527,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exigé"
+          }
+        }
+      }
+    },
+    "Restore Rows" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurer les lignes"
           }
         }
       }
@@ -1611,6 +1781,16 @@
         }
       }
     },
+    "Set NULL" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettre à NULL"
+          }
+        }
+      }
+    },
     "Show SQL" : {
       "localizations" : {
         "fr" : {
@@ -1647,6 +1827,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Préproduction"
+          }
+        }
+      }
+    },
+    "Statement %lld changed %lld rows instead of 1. The row may have been modified or deleted by someone else. Nothing was changed." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'instruction %lld a modifié %lld lignes au lieu d'une. La ligne a peut-être été modifiée ou supprimée par quelqu'un d'autre. Rien n'a été modifié."
           }
         }
       }
@@ -1751,6 +1941,16 @@
         }
       }
     },
+    "The column %@ is computed by the database." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La colonne %@ est calculée par la base de données."
+          }
+        }
+      }
+    },
     "The connection and its saved password are removed from Rowster. The database is not touched." : {
       "localizations" : {
         "fr" : {
@@ -1821,6 +2021,46 @@
         }
       }
     },
+    "The value of %@ was not loaded and cannot be written back." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La valeur de %@ n'a pas été chargée et ne peut pas être réécrite."
+          }
+        }
+      }
+    },
+    "There is nothing to change." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il n'y a rien à modifier."
+          }
+        }
+      }
+    },
+    "These statements run in one transaction. If one fails, none is applied." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ces instructions s'exécutent dans une seule transaction. Si l'une échoue, aucune n'est appliquée."
+          }
+        }
+      }
+    },
+    "This column is computed by the database." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette colonne est calculée par la base de données."
+          }
+        }
+      }
+    },
     "This connection is read-only" : {
       "localizations" : {
         "fr" : {
@@ -1837,6 +2077,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cette connexion est en lecture seule. Cliquez pour déverrouiller l'écriture dans cette fenêtre."
+          }
+        }
+      }
+    },
+    "This connection is read-only. Unlock writing to make changes." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette connexion est en lecture seule. Déverrouillez l'écriture pour faire des modifications."
           }
         }
       }
@@ -1867,6 +2117,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cette instruction doit être confirmée avant de s'exécuter."
+          }
+        }
+      }
+    },
+    "This table has no primary key, so its rows cannot be edited safely." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette table n'a pas de clé primaire : ses lignes ne peuvent pas être modifiées en sécurité."
           }
         }
       }
