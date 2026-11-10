@@ -15,6 +15,9 @@ All notable changes to Rowster are documented here. The format follows [Keep a C
 - Filter bar (⌘F): column, operator and value rows combined with AND or OR, a search across every column, a hand-written SQL condition, and *Show SQL*. No limit on the number of filters.
 - Row inspector (⌥⌘I): every value of the selected row, a foldable tree for JSON, and binary values loaded on demand as an image or a hex dump.
 - Foreign keys: an arrow in the cell opens the referenced row, and hovering it previews that row.
+- Unlock writing on a read-only connection for one window at a time, after a confirmation and, optionally, Touch ID; lock it again with one click.
+- `DROP`, `TRUNCATE`, and `DELETE` or `UPDATE` without `WHERE` are shown in full and must be confirmed before they run.
+- Settings: Touch ID for unlocking, rows fetched per statement, statement history.
 - SQLite connections.
 - Demo mode (`--demo`): sample connections on an in-memory database, with no network, disk or Keychain access.
 - English and French.

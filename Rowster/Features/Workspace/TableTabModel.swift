@@ -86,12 +86,13 @@ final class TableTabModel: GridDataSource {
                     hasForeignKey: description.foreignKey(for: column.name) != nil)
             }
             structure = description
-            gridStructureRevision += 1
         } catch {
             errorMessage = WorkspaceModel.describe(error)
             return
         }
         await fetchPage()
+        // The columns are laid out once the first rows are there, so their widths fit the data.
+        gridStructureRevision += 1
         estimatedCount = try? await session.estimatedRowCount(ref)
     }
 

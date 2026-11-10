@@ -15,6 +15,8 @@ struct AppEnvironment {
     var drivers: any DriverProviding
     /// Sort order and column widths remembered per table.
     var viewState: any ViewStateStoring
+    /// Touch ID or the Mac password, when the user asks for it before unlocking writing.
+    var authenticator: any UnlockAuthenticating
 
     @MainActor
     static func live() -> AppEnvironment {
@@ -23,7 +25,8 @@ struct AppEnvironment {
             connections: FileConnectionStore(url: FileConnectionStore.defaultURL()),
             secrets: KeychainSecretStore(),
             drivers: LiveDriverProvider(),
-            viewState: FileViewStateStore(directory: FileViewStateStore.defaultDirectory()))
+            viewState: FileViewStateStore(directory: FileViewStateStore.defaultDirectory()),
+            authenticator: SystemAuthenticator())
     }
 
     /// Sample connections on an in-memory database: no network, no disk, no Keychain.
@@ -34,7 +37,8 @@ struct AppEnvironment {
             connections: MemoryConnectionStore(DemoData.library),
             secrets: MemorySecretStore(),
             drivers: DemoDriverProvider(),
-            viewState: MemoryViewStateStore())
+            viewState: MemoryViewStateStore(),
+            authenticator: DemoAuthenticator())
     }
 
     @MainActor

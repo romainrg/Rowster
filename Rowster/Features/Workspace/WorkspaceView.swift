@@ -27,6 +27,17 @@ struct WorkspaceView: View {
             if model.profile.label != .none { tint.frame(height: 3).accessibilityHidden(true) }
         }
         .focusedSceneValue(\.workspace, model)
+        .sheet(item: $model.hazardRequest, onDismiss: { model.answerHazard(false) }) { request in
+            HazardSheet(request: request, profile: model.profile) { model.answerHazard($0) }
+        }
+        .alert(
+            "Something went wrong",
+            isPresented: Binding(get: { model.actionError != nil }, set: { if !$0 { model.actionError = nil } })
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(verbatim: model.actionError ?? "")
+        }
     }
 
     private var subtitle: String {
@@ -137,13 +148,7 @@ struct WorkspaceView: View {
                     }
                 }
             }
-            if model.isReadOnly {
-                Label("Read-only", systemImage: "lock.fill")
-                    .labelStyle(.titleAndIcon)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(tint)
-                    .help(Text("This connection is read-only"))
-            }
+            if model.hasLock, model.phase == .ready { LockButton(model: model) }
             Button {
                 Task { await model.reloadSchema() }
             } label: {

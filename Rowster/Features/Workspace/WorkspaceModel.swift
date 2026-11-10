@@ -117,6 +117,62 @@ final class WorkspaceModel {
         await session?.cancel()
     }
 
+    // MARK: - Safety
+
+    /// Whether this connection opens read-only, and so shows a lock.
+    var hasLock: Bool { profile.isReadOnlyOnOpen }
+    var actionError: String?
+
+    /// Unlocks writing for this window only. The caller has already shown a confirmation; Touch ID is
+    /// asked on top when the user turned it on.
+    func unlockWriting() async {
+        guard let session, isReadOnly else { return }
+        if UserDefaults.standard.bool(forKey: AppSettings.unlockRequiresAuthentication) {
+            let reason = String(localized: "unlock writing on \(profile.displayName)")
+            guard await env.authenticator.authenticate(reason: reason) else { return }
+        }
+        do {
+            try await session.setReadOnly(false)
+            isReadOnly = false
+        } catch {
+            actionError = Self.describe(error)
+        }
+    }
+
+    /// Makes the window read-only again. If the server refuses, the session is closed rather than left writable.
+    func lockWriting() async {
+        guard let session, !isReadOnly else { return }
+        do {
+            try await session.setReadOnly(true)
+            isReadOnly = true
+        } catch {
+            self.session = nil
+            phase = .failed(Self.describe(error))
+        }
+    }
+
+    struct HazardRequest: Identifiable {
+        let id = UUID()
+        let statements: [(sql: String, hazard: StatementInfo.Hazard)]
+        let answer: (Bool) -> Void
+    }
+
+    var hazardRequest: HazardRequest?
+
+    /// Shows the destructive statements and waits for the user's decision. Nothing runs before it returns.
+    func confirm(hazards statements: [(sql: String, hazard: StatementInfo.Hazard)]) async -> Bool {
+        guard !statements.isEmpty else { return true }
+        return await withCheckedContinuation { continuation in
+            hazardRequest = HazardRequest(statements: statements) { continuation.resume(returning: $0) }
+        }
+    }
+
+    func answerHazard(_ confirmed: Bool) {
+        let request = hazardRequest
+        hazardRequest = nil
+        request?.answer(confirmed)
+    }
+
     // MARK: - Sidebar
 
     /// The namespaces with only the objects whose name matches the sidebar search.
