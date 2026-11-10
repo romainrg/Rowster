@@ -229,8 +229,17 @@ final class WorkspaceModel {
             selectedTabID = blank.id
             return
         }
+        guard let session else { return }
         queryCount += 1
-        let tab = WorkspaceTab(content: .query(QueryTabModel(number: queryCount)))
+        let query = QueryTabModel(
+            number: queryCount, session: session, dialect: dialect, connectionID: profile.id, history: env.history,
+            activity: activity)
+        query.confirmHazards = { [weak self] hazards in await self?.confirm(hazards: hazards) ?? false }
+        query.onSchemaChange = { [weak self] in
+            guard let self else { return }
+            Task { await self.reloadSchema() }
+        }
+        let tab = WorkspaceTab(content: .query(query))
         tabs.append(tab)
         selectedTabID = tab.id
     }

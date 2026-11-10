@@ -40,15 +40,3 @@ final class WorkspaceTab: Identifiable {
     }
 }
 
-/// A SQL editor tab.
-@MainActor
-@Observable
-final class QueryTabModel {
-    let number: Int
-    var text = ""
-
-    init(number: Int) { self.number = number }
-
-    var title: String { String(localized: "Query \(number)") }
-    var isBlank: Bool { text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-}

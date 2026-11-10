@@ -17,6 +17,8 @@ struct AppEnvironment {
     var viewState: any ViewStateStoring
     /// Touch ID or the Mac password, when the user asks for it before unlocking writing.
     var authenticator: any UnlockAuthenticating
+    /// The statements run in the editor. Never their results.
+    var history: any HistoryStoring
 
     @MainActor
     static func live() -> AppEnvironment {
@@ -26,7 +28,8 @@ struct AppEnvironment {
             secrets: KeychainSecretStore(),
             drivers: LiveDriverProvider(),
             viewState: FileViewStateStore(directory: FileViewStateStore.defaultDirectory()),
-            authenticator: SystemAuthenticator())
+            authenticator: SystemAuthenticator(),
+            history: FileHistoryStore(directory: FileHistoryStore.defaultDirectory()))
     }
 
     /// Sample connections on an in-memory database: no network, no disk, no Keychain.
@@ -38,7 +41,8 @@ struct AppEnvironment {
             secrets: MemorySecretStore(),
             drivers: DemoDriverProvider(),
             viewState: MemoryViewStateStore(),
-            authenticator: DemoAuthenticator())
+            authenticator: DemoAuthenticator(),
+            history: MemoryHistoryStore())
     }
 
     @MainActor
