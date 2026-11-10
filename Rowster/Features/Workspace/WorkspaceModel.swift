@@ -202,6 +202,7 @@ final class WorkspaceModel {
         let model = TableTabModel(
             ref: item.ref, kind: item.kind, session: session, dialect: dialect, connectionID: profile.id,
             viewState: env.viewState, activity: activity)
+        model.isReadOnly = { [weak self] in self?.isReadOnly ?? true }
         model.onFollowForeignKey = { [weak self] table, column, value in
             self?.showRow(in: table, column: column, value: value)
         }

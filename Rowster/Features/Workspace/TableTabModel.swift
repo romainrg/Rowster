@@ -19,7 +19,7 @@ final class TableTabModel: GridDataSource {
     let dialect: any SQLDialect
     private let connectionID: UUID
     private let viewState: any ViewStateStoring
-    private let activity: Activity
+    let activity: Activity
 
     private(set) var structure: TableDescription?
     private(set) var columns: [GridColumn] = []
@@ -30,17 +30,30 @@ final class TableTabModel: GridDataSource {
     private(set) var pageSize = 300
     private(set) var sort: [SortTerm] = []
     private(set) var estimatedCount: Int?
-    private(set) var exactCount: Int?
+    var exactCount: Int?
     private(set) var isLoading = false
     private(set) var isCounting = false
     var errorMessage: String?
 
-    private(set) var gridRevision = 0
+    var gridRevision = 0
     private(set) var gridStructureRevision = 0
     private(set) var selectedRows = IndexSet()
     private(set) var activeColumn: Int?
     private var columnWidths: [String: Double] = [:]
     private var generation = 0
+
+    /// Pending edits of loaded rows, not sent yet: row index, then column index, to the new value.
+    var pendingEdits: [Int: [Int: SQLValue]] = [:]
+    /// Loaded rows marked for deletion, not sent yet.
+    var deletedRows = Set<Int>()
+    /// New rows, not sent yet: column index to value. A column that is not set keeps its default.
+    var newRows: [[Int: SQLValue]] = []
+    var isPreviewingChanges = false
+    var isCommitting = false
+    /// A short explanation shown in the footer when an action was refused.
+    var notice: String?
+    /// Set by the window: whether writing is currently locked.
+    var isReadOnly: () -> Bool = { false }
 
     var isInspectorVisible = false
     private var loadedBlobs: [BlobKey: Data] = [:]
@@ -97,8 +110,16 @@ final class TableTabModel: GridDataSource {
     }
 
     func reload() async {
+        guard !blockedByPendingChanges() else { return }
         exactCount = nil
         await fetchPage()
+    }
+
+    /// Moving to other rows would lose track of the pending changes: they must be committed or discarded first.
+    func blockedByPendingChanges() -> Bool {
+        guard hasPendingChanges else { return false }
+        notice = String(localized: "Commit or discard the pending changes first.")
+        return true
     }
 
     private func browseQuery() -> BrowseQuery? {
@@ -125,7 +146,7 @@ final class TableTabModel: GridDataSource {
 
     /// Builds the WHERE clause from the enabled rows and reloads from the first page.
     func applyFilters() async {
-        guard let structure else { return }
+        guard let structure, !blockedByPendingChanges() else { return }
         do {
             appliedFilter = try FilterBuilder(columns: structure.columns, dialect: dialect).build(filters, match: filterMatch)
             filterError = nil
@@ -139,6 +160,7 @@ final class TableTabModel: GridDataSource {
     }
 
     func clearFilters() async {
+        guard !blockedByPendingChanges() else { return }
         filters = []
         filterError = nil
         guard appliedFilter != nil else { return }
@@ -170,8 +192,11 @@ final class TableTabModel: GridDataSource {
         }
     }
 
-    private func fetchPage() async {
+    func fetchPage() async {
         guard let query = browseQuery() else { return }
+        pendingEdits = [:]
+        deletedRows = []
+        newRows = []
         generation += 1
         let current = generation
         isLoading = true
@@ -204,19 +229,19 @@ final class TableTabModel: GridDataSource {
     var canGoBack: Bool { pageIndex > 0 }
 
     func nextPage() async {
-        guard hasMore else { return }
+        guard hasMore, !blockedByPendingChanges() else { return }
         pageIndex += 1
         await fetchPage()
     }
 
     func previousPage() async {
-        guard pageIndex > 0 else { return }
+        guard pageIndex > 0, !blockedByPendingChanges() else { return }
         pageIndex -= 1
         await fetchPage()
     }
 
     func setPageSize(_ size: Int) async {
-        guard size != pageSize else { return }
+        guard size != pageSize, !blockedByPendingChanges() else { return }
         pageSize = size
         pageIndex = 0
         await fetchPage()
@@ -237,17 +262,29 @@ final class TableTabModel: GridDataSource {
     // MARK: - Grid
 
     var gridColumns: [GridColumn] { columns }
-    var gridRowCount: Int { rows.count }
+    var gridRowCount: Int { rows.count + newRows.count }
     var gridSort: [SortTerm] { sort }
 
+    /// The value shown in a cell: the pending one when the cell was edited, the loaded one otherwise.
     func gridValue(row: Int, column: Int) -> SQLValue {
-        guard rows.indices.contains(row), rows[row].indices.contains(column) else { return .null }
-        return rows[row][column]
+        if rows.indices.contains(row) {
+            if let edited = pendingEdits[row]?[column] { return edited }
+            return rows[row].indices.contains(column) ? rows[row][column] : .null
+        }
+        let newIndex = row - rows.count
+        guard newRows.indices.contains(newIndex) else { return .null }
+        return newRows[newIndex][column] ?? .null
+    }
+
+    func gridState(row: Int, column: Int) -> GridCellState {
+        if row >= rows.count { return .inserted }
+        if deletedRows.contains(row) { return .deleted }
+        return pendingEdits[row]?[column] != nil ? .modified : .normal
     }
 
     /// A click sorts by one column (ascending, descending, then none); a shift-click adds a column.
     func gridToggleSort(column: Int, additive: Bool) {
-        guard columns.indices.contains(column) else { return }
+        guard columns.indices.contains(column), !blockedByPendingChanges() else { return }
         let name = columns[column].title
         let existing = sort.firstIndex { $0.column == name }
         if additive {
@@ -298,7 +335,9 @@ final class TableTabModel: GridDataSource {
     }
 
     func copyRows(as format: TabularFormat) {
-        let selected = selectedRows.filter { rows.indices.contains($0) }.map { rows[$0] }
+        let selected = selectedRows.filter { $0 < gridRowCount }.map { row in
+            columns.indices.map { gridValue(row: row, column: $0) }
+        }
         guard !selected.isEmpty else { return }
         setClipboard(TabularText.format(columns: columns.map(\.title), rows: selected, as: format, table: ref, dialect: dialect))
     }
@@ -312,7 +351,7 @@ final class TableTabModel: GridDataSource {
 
     /// The row shown by the inspector: the selection, when it is a single row.
     var inspectedRow: Int? {
-        guard selectedRows.count == 1, let row = selectedRows.first, rows.indices.contains(row) else { return nil }
+        guard selectedRows.count == 1, let row = selectedRows.first, row < gridRowCount else { return nil }
         return row
     }
 
@@ -419,6 +458,7 @@ final class TableTabModel: GridDataSource {
         }
         copyAs.submenu = submenu
         menu.addItem(copyAs)
+        addEditingItems(to: menu, row: row, column: column)
         return menu
     }
 }

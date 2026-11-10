@@ -18,6 +18,7 @@ All notable changes to Rowster are documented here. The format follows [Keep a C
 - Unlock writing on a read-only connection for one window at a time, after a confirmation and, optionally, Touch ID; lock it again with one click.
 - `DROP`, `TRUNCATE`, and `DELETE` or `UPDATE` without `WHERE` are shown in full and must be confirmed before they run.
 - Settings: Touch ID for unlocking, rows fetched per statement, statement history.
+- Pending changes: edit cells, add, duplicate and delete rows in the grid; the changes are highlighted and nothing is sent until you preview the exact SQL (⇧⌘P) and commit (⌘S). A commit is one transaction: if a statement fails, or does not change exactly one row, everything is rolled back.
 - SQLite connections.
 - Demo mode (`--demo`): sample connections on an in-memory database, with no network, disk or Keychain access.
 - English and French.
