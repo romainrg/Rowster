@@ -42,6 +42,12 @@ final class TableTabModel: GridDataSource {
     private var columnWidths: [String: Double] = [:]
     private var generation = 0
 
+    var isInspectorVisible = false
+    private var loadedBlobs: [BlobKey: Data] = [:]
+    private var referencedTables: [TableRef: TableDescription] = [:]
+    /// Set by the window: opens the referenced table filtered on the key.
+    var onFollowForeignKey: ((TableRef, String, SQLValue) -> Void)?
+
     var filters: [FilterCondition] = []
     var filterMatch: FilterMatch = .all
     var isFilterBarVisible = false
@@ -301,9 +307,100 @@ final class TableTabModel: GridDataSource {
         NSPasteboard.general.setString(text, forType: .string)
     }
 
+    // MARK: - Inspector
+
+    /// The row shown by the inspector: the selection, when it is a single row.
+    var inspectedRow: Int? {
+        guard selectedRows.count == 1, let row = selectedRows.first, rows.indices.contains(row) else { return nil }
+        return row
+    }
+
+    func isKeyColumn(_ column: Int) -> Bool {
+        guard let structure, structure.columns.indices.contains(column) else { return false }
+        return structure.columns[column].primaryKeyPosition != nil
+    }
+
+    private struct BlobKey: Hashable {
+        let key: [SQLValue]
+        let column: String
+    }
+
+    private func blobKey(row: Int, column: Int) -> BlobKey? {
+        guard keys.indices.contains(row), !keys[row].isEmpty, columns.indices.contains(column) else { return nil }
+        return BlobKey(key: keys[row], column: columns[column].title)
+    }
+
+    /// The bytes of a binary cell when they are in memory: read with the row, or loaded on demand.
+    func blob(row: Int, column: Int) -> Data? {
+        if case .bytes(let data) = gridValue(row: row, column: column) { return data }
+        return blobKey(row: row, column: column).flatMap { loadedBlobs[$0] }
+    }
+
+    /// Fetches one binary value by the identity of its row, on the auxiliary connection.
+    func loadBlob(row: Int, column: Int) async {
+        guard let query = browseQuery(), let key = blobKey(row: row, column: column),
+              let fetch = query.value(of: key.column, key: key.key, dialect: dialect) else {
+            errorMessage = String(localized: "This value cannot be loaded: the table has no primary key.")
+            return
+        }
+        do {
+            let result = try await session.preview(fetch.sql, parameters: fetch.parameters, limit: 1)
+            if case .bytes(let data)? = result.rows.first?.first { loadedBlobs[key] = data }
+        } catch {
+            errorMessage = WorkspaceModel.describe(error)
+        }
+    }
+
+    // MARK: - Foreign keys
+
+    private func foreignKeyTarget(row: Int, column: Int) -> (table: TableRef, column: String, value: SQLValue)? {
+        guard let structure, columns.indices.contains(column),
+              let key = structure.foreignKey(for: columns[column].title), let target = key.referencedColumns.first else { return nil }
+        let value = gridValue(row: row, column: column)
+        guard !value.isNull else { return nil }
+        // A reference without a schema points into the schema of this table.
+        let table = TableRef(schema: key.referencedTable.schema ?? ref.schema, name: key.referencedTable.name)
+        return (table, target, value)
+    }
+
+    func gridFollowForeignKey(row: Int, column: Int) {
+        guard let target = foreignKeyTarget(row: row, column: column) else { return }
+        onFollowForeignKey?(target.table, target.column, target.value)
+    }
+
+    /// The referenced row, read on the auxiliary connection with a limit of one.
+    func gridForeignKeyPreview(row: Int, column: Int) async -> ForeignKeyPreview? {
+        guard let target = foreignKeyTarget(row: row, column: column) else { return nil }
+        do {
+            let description: TableDescription
+            if let cached = referencedTables[target.table] {
+                description = cached
+            } else {
+                description = try await session.describe(target.table)
+                referencedTables[target.table] = description
+            }
+            var query = BrowseQuery(table: description, limit: 1)
+            query.filter = BrowseQuery.equality(column: target.column, value: target.value, dialect: dialect)
+            let select = query.select(dialect: dialect)
+            let result = try await session.preview(select.sql, parameters: select.parameters, limit: 2)
+            guard let found = query.page(from: result).rows.first else { return nil }
+            return ForeignKeyPreview(
+                table: target.table.displayName,
+                fields: zip(description.columns, found).map { ($0.name, GridCellView.displayText($1), $1.isNull) })
+        } catch {
+            return nil
+        }
+    }
+
     func gridMenu(row: Int?, column: Int?) -> NSMenu? {
         guard row != nil else { return nil }
         let menu = NSMenu()
+        if let row, let column, foreignKeyTarget(row: row, column: column) != nil {
+            menu.addItem(ClosureMenuItem(String(localized: "Open Referenced Row")) { [weak self] in
+                self?.gridFollowForeignKey(row: row, column: column)
+            })
+            menu.addItem(.separator())
+        }
         if let row, let column {
             menu.addItem(ClosureMenuItem(String(localized: "Copy Cell")) { [weak self] in
                 guard let self else { return }
