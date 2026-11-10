@@ -20,6 +20,13 @@ All notable changes to Rowster are documented here. The format follows [Keep a C
 - Settings: Touch ID for unlocking, rows fetched per statement, statement history.
 - Pending changes: edit cells, add, duplicate and delete rows in the grid; the changes are highlighted and nothing is sent until you preview the exact SQL (⇧⌘P) and commit (⌘S). A commit is one transaction: if a statement fails, or does not change exactly one row, everything is rolled back.
 - SQL editor: syntax highlighting per engine, line numbers, run the statement under the cursor (⌘↩) or everything (⇧⌘↩), one result per statement, a row limit with *Load More*, cancellation, and a searchable history that never stores results and hides password literals.
+- PostgreSQL connections, with a driver written in Swift on the wire protocol: SCRAM-SHA-256 and MD5 authentication, TLS, results read in batches, cancellation. Servers that speak the same protocol should work as far as they implement it.
+- MySQL and MariaDB connections, with a driver written in Swift: `caching_sha2_password` and `mysql_native_password`, TLS, prepared statements for everything Rowster generates, cancellation.
+- TLS modes: disabled, preferred, required, verify CA and verify identity, with an optional CA file.
+- SSH tunnels through the system OpenSSH: `~/.ssh/config`, agents and ProxyJump apply; passphrase and host-key questions are asked in the app.
+- Structure tab: columns, indexes, foreign keys, checks and the DDL, read-only.
+- Export every row matching the filter to CSV or JSON, written as a stream, with progress and cancellation.
+- Automatic reconnection: a read is run again on the new connection, with the read-only state applied again; a write is never replayed.
 - SQLite connections.
 - Demo mode (`--demo`): sample connections on an in-memory database, with no network, disk or Keychain access.
 - English and French.

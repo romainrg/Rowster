@@ -128,6 +128,7 @@ final class RecordingTunnels: TunnelProviding, @unchecked Sendable {
 
     struct Recorded: Tunnel {
         let socketPath = "/tmp/recorded.sock"
+        let isRunning = true
         let onClose: @Sendable () -> Void
         func close() { onClose() }
     }

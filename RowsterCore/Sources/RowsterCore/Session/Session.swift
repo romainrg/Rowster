@@ -10,6 +10,9 @@ public enum SessionError: Error, Equatable, Sendable {
     case transactionInProgress
     /// A statement of a commit did not affect exactly one row; everything was rolled back.
     case unexpectedRowCount(statement: Int, affected: Int?)
+    /// The connection dropped and the statement was not replayed, because it is not a plain read or a
+    /// transaction was open. `reconnected` tells whether the connection is usable again.
+    case connectionLost(reconnected: Bool)
 }
 
 /// The connections of one work window.
@@ -187,7 +190,19 @@ public actor Session {
         try Self.check(sql, dialect: primary.dialect, readOnly: isReadOnly, confirmed: confirmed)
         await acquirePrimary()
         defer { releasePrimary() }
-        let cursor = try await primary.execute(sql, parameters: parameters)
+        let cursor: any ResultCursor
+        do {
+            cursor = try await primary.execute(sql, parameters: parameters)
+        } catch let error as ConnectionError where error == .closed || Self.isUnreachable(error) {
+            // The connection dropped. Reconnect with the same read-only state; replay only a plain read.
+            let wasInTransaction = await primary.transactionState != .idle
+            let isRead = primary.dialect.classifier.classify(sql).kind == .read
+            let reconnected = (try? await reconnect()) != nil
+            guard reconnected, isRead, !wasInTransaction, let fresh = self.primary else {
+                throw SessionError.connectionLost(reconnected: reconnected)
+            }
+            cursor = try await fresh.execute(sql, parameters: parameters)
+        }
         do {
             let result = try await body(cursor)
             return (result, try await cursor.close())
@@ -195,6 +210,22 @@ public actor Session {
             _ = try? await cursor.close()
             throw error
         }
+    }
+
+    private static func isUnreachable(_ error: ConnectionError) -> Bool {
+        if case .unreachable = error { return true }
+        return false
+    }
+
+    /// Opens the connections again after a drop: the tunnel when it died, then the primary connection,
+    /// with the read-only state of the window and the bootstrap SQL applied again.
+    private func reconnect() async throws {
+        await closeConnections()
+        if let tunnel, !tunnel.isRunning {
+            tunnel.close()
+            self.tunnel = nil
+        }
+        try await open()
     }
 
     /// Runs the statements of a change set in **one transaction**. Each statement must affect exactly one
