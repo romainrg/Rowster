@@ -59,13 +59,12 @@ enum ScreenshotTool {
     private static func render(_ scene: ScreenshotScene, dark: Bool, to url: URL, scale: CGFloat = 2) async throws {
         let size = scene.size
         let appearance = NSAppearance(named: dark ? .darkAqua : .aqua)
-        let controller = NSHostingController(rootView: scene.make())
+        let controller = NSHostingController(rootView: await scene.make())
         controller.sceneBridgingOptions = .all
         controller.sizingOptions = []
         let window = NSWindow(contentViewController: controller)
         window.styleMask = [.titled]
         window.appearance = appearance
-        window.title = "Rowster"
         // The scene size is the content size: the title bar is added around it, as in the app.
         window.setContentSize(size)
         window.setFrameOrigin(CGPoint(x: -20_000, y: -20_000))
@@ -79,6 +78,7 @@ enum ScreenshotTool {
 
         let frameView = hosting.superview ?? hosting
         let frameSize = frameView.bounds.size
+        window.title = scene.title
         guard let rep = NSBitmapImageRep(
             bitmapDataPlanes: nil, pixelsWide: Int(frameSize.width * scale), pixelsHigh: Int(frameSize.height * scale),
             bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false,

@@ -21,6 +21,16 @@
         }
       }
     },
+    "%lld columns" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld colonnes"
+          }
+        }
+      }
+    },
     "A production connection always opens read-only. Writing is unlocked for one window at a time." : {
       "localizations" : {
         "fr" : {
@@ -121,12 +131,32 @@
         }
       }
     },
+    "Cancel the running statement" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler l'instruction en cours"
+          }
+        }
+      }
+    },
     "Cannot connect: %@" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Connexion impossible : %@"
+          }
+        }
+      }
+    },
+    "Cannot read the schema" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de lire le schéma"
           }
         }
       }
@@ -147,6 +177,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Choisir…"
+          }
+        }
+      }
+    },
+    "Close %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer %@"
+          }
+        }
+      }
+    },
+    "Close Tab" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer l'onglet"
           }
         }
       }
@@ -191,12 +241,42 @@
         }
       }
     },
+    "Connecting…" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion…"
+          }
+        }
+      }
+    },
     "Connection URL" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL de connexion"
+          }
+        }
+      }
+    },
+    "Connection failed" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec de la connexion"
+          }
+        }
+      }
+    },
+    "Copy Name" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le nom"
           }
         }
       }
@@ -401,6 +481,36 @@
         }
       }
     },
+    "Filter databases" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrer les bases"
+          }
+        }
+      }
+    },
+    "Filter tables" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrer les tables"
+          }
+        }
+      }
+    },
+    "Functions" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonctions"
+          }
+        }
+      }
+    },
     "Gray" : {
       "localizations" : {
         "fr" : {
@@ -541,6 +651,26 @@
         }
       }
     },
+    "New Query Tab" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvel onglet de requête"
+          }
+        }
+      }
+    },
+    "New query tab" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvel onglet de requête"
+          }
+        }
+      }
+    },
     "No connections yet" : {
       "localizations" : {
         "fr" : {
@@ -561,6 +691,16 @@
         }
       }
     },
+    "No tables" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune table"
+          }
+        }
+      }
+    },
     "None" : {
       "localizations" : {
         "fr" : {
@@ -571,12 +711,32 @@
         }
       }
     },
+    "Nothing open" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien d'ouvert"
+          }
+        }
+      }
+    },
     "OK" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "Open" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir"
           }
         }
       }
@@ -651,6 +811,16 @@
         }
       }
     },
+    "Password for %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mot de passe pour %@"
+          }
+        }
+      }
+    },
     "Password storage" : {
       "localizations" : {
         "fr" : {
@@ -721,12 +891,42 @@
         }
       }
     },
+    "Query %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requête %lld"
+          }
+        }
+      }
+    },
+    "Read-only" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture seule"
+          }
+        }
+      }
+    },
     "Red" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rouge"
+          }
+        }
+      }
+    },
+    "Reload schema" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recharger le schéma"
           }
         }
       }
@@ -757,6 +957,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exigé"
+          }
+        }
+      }
+    },
+    "Retry" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réessayer"
           }
         }
       }
@@ -841,6 +1051,16 @@
         }
       }
     },
+    "Select a table in the sidebar, or press ⌘T for a new query." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionnez une table dans la barre latérale, ou appuyez sur ⌘T pour une nouvelle requête."
+          }
+        }
+      }
+    },
     "Server" : {
       "localizations" : {
         "fr" : {
@@ -891,12 +1111,32 @@
         }
       }
     },
+    "Switch database" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changer de base"
+          }
+        }
+      }
+    },
     "TLS" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "TLS"
+          }
+        }
+      }
+    },
+    "Tables" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tables"
           }
         }
       }
@@ -951,6 +1191,16 @@
         }
       }
     },
+    "The password is used for this window only and is not saved." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le mot de passe sert à cette fenêtre uniquement et n'est pas enregistré."
+          }
+        }
+      }
+    },
     "The server asks for an authentication method Rowster does not support: %@" : {
       "localizations" : {
         "fr" : {
@@ -967,6 +1217,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Le serveur ne propose pas TLS, alors que cette connexion l'exige."
+          }
+        }
+      }
+    },
+    "This connection is read-only" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette connexion est en lecture seule"
+          }
+        }
+      }
+    },
+    "This connection is read-only: %@ was not sent. Unlock writing to run it." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette connexion est en lecture seule : %@ n'a pas été envoyé. Déverrouillez l'écriture pour l'exécuter."
+          }
+        }
+      }
+    },
+    "This connection no longer exists" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette connexion n'existe plus"
+          }
+        }
+      }
+    },
+    "This statement must be confirmed before it runs." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette instruction doit être confirmée avant de s'exécuter."
           }
         }
       }
@@ -1017,6 +1307,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version %@"
+          }
+        }
+      }
+    },
+    "Views" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vues"
           }
         }
       }
