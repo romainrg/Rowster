@@ -32,6 +32,7 @@ First public version.
 - Export every row matching the filter to CSV or JSON, written as a stream, with progress and cancellation.
 - Automatic reconnection: a read is run again on the new connection, with the read-only state applied again; a write is never replayed.
 - SQLite connections.
+- Visual identity *Nebula*: an indigo, raspberry and amber gradient, frosted-glass surfaces on a softly lit ground, monospaced data in the grid, new syntax colors, gradient environment badges, and a new app icon.
 - Demo mode (`--demo`): sample connections on an in-memory database, with no network, disk or Keychain access.
 - English and French.
 - DMG and PKG installers, with `SHA256SUMS`, built by `make release` and published by the release workflow.

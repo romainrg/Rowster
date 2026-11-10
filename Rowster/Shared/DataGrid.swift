@@ -71,13 +71,15 @@ struct DataGridView: NSViewRepresentable {
         let table = GridTableView()
         table.coordinator = context.coordinator
         table.usesAutomaticRowHeights = false
-        table.rowHeight = 22
+        table.rowHeight = 24
         table.intercellSpacing = .zero
-        table.usesAlternatingRowBackgroundColors = true
+        table.usesAlternatingRowBackgroundColors = false
+        table.backgroundColor = Theme.Grid.background
+        table.gridColor = Theme.Grid.line
         table.columnAutoresizingStyle = .noColumnAutoresizing
         table.allowsMultipleSelection = true
         table.allowsColumnReordering = true
-        table.gridStyleMask = [.solidVerticalGridLineMask]
+        table.gridStyleMask = [.solidHorizontalGridLineMask, .solidVerticalGridLineMask]
         table.style = .plain
         table.dataSource = context.coordinator
         table.delegate = context.coordinator
@@ -376,9 +378,10 @@ final class GridCellView: NSView {
     var onArrowHover: ((Bool) -> Void)?
     var arrowView: NSView { arrow }
 
-    private static let font = NSFont.systemFont(ofSize: 12)
-    private static let numberFont = NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .regular)
-    private static let nullFont = NSFontManager.shared.convert(NSFont.systemFont(ofSize: 11), toHaveTrait: .italicFontMask)
+    private static let font = NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+    private static let numberFont = NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+    private static let nullFont = NSFontManager.shared.convert(
+        NSFont.monospacedSystemFont(ofSize: 11, weight: .regular), toHaveTrait: .italicFontMask)
 
     init() {
         super.init(frame: .zero)
@@ -411,6 +414,23 @@ final class GridCellView: NSView {
 
     @objc private func arrowClicked() { onArrow?() }
 
+    private var stateColor: NSColor?
+    private var isActiveCell = false
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        updateLayerColors()
+    }
+
+    /// Layer colors are resolved for one appearance, so they are set again when it changes.
+    private func updateLayerColors() {
+        effectiveAppearance.performAsCurrentDrawingAppearance {
+            layer?.backgroundColor = stateColor?.cgColor
+            layer?.borderColor = isActiveCell ? Theme.Grid.focus.cgColor : nil
+        }
+        layer?.borderWidth = isActiveCell ? 1.5 : 0
+    }
+
     /// What a cell shows: one line, bounded in length, with line breaks made visible.
     static func displayText(_ value: SQLValue) -> String {
         guard let text = value.displayText else { return "NULL" }
@@ -431,16 +451,17 @@ final class GridCellView: NSView {
             label.textColor = .tertiaryLabelColor
         } else {
             label.font = isNumber ? Self.numberFont : Self.font
-            label.textColor = value.isBinary || state == .deleted ? .secondaryLabelColor : .labelColor
+            label.textColor =
+                state == .deleted ? Theme.Grid.deletedText : (value.isBinary ? .secondaryLabelColor : .labelColor)
         }
         switch state {
-        case .normal: layer?.backgroundColor = nil
-        case .modified: layer?.backgroundColor = NSColor.systemOrange.withAlphaComponent(0.30).cgColor
-        case .inserted: layer?.backgroundColor = NSColor.systemGreen.withAlphaComponent(0.22).cgColor
-        case .deleted: layer?.backgroundColor = NSColor.systemRed.withAlphaComponent(0.22).cgColor
+        case .normal: stateColor = nil
+        case .modified: stateColor = Theme.Grid.modified
+        case .inserted: stateColor = Theme.Grid.inserted
+        case .deleted: stateColor = Theme.Grid.deleted
         }
-        layer?.borderWidth = isActive ? 1.5 : 0
-        layer?.borderColor = isActive ? NSColor.controlAccentColor.cgColor : nil
+        isActiveCell = isActive
+        updateLayerColors()
         arrow.isHidden = !showsArrow
         needsLayout = true
     }

@@ -31,7 +31,15 @@ struct TabBarView: View {
             .padding(.trailing, 8)
         }
         .frame(height: 34)
-        .background(model.profile.effectiveColor.color.opacity(model.profile.label == .none ? 0.06 : 0.14))
+        .background(wash)
+    }
+
+    /// The tab bar, washed with the connection color like the toolbar above it.
+    private var wash: LinearGradient {
+        let tint = model.profile.effectiveColor.color
+        let strength = model.profile.label == .none ? 0.06 : 0.14
+        return LinearGradient(
+            colors: [tint.opacity(strength), tint.opacity(strength * 0.35)], startPoint: .leading, endPoint: .trailing)
     }
 }
 
@@ -63,11 +71,11 @@ private struct TabChip: View {
         .padding(.trailing, 5)
         .frame(height: 24)
         .background {
-            RoundedRectangle(cornerRadius: 7, style: .continuous)
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .fill(isSelected ? Theme.cardFill : (isHovering ? Theme.softFill.opacity(0.6) : .clear))
-                .shadow(color: isSelected ? Theme.cardShadow : .clear, radius: 3, y: 1)
+                .shadow(color: isSelected ? Theme.cardShadow : .clear, radius: 4, y: 2)
         }
-        .contentShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         .onTapGesture(count: 2, perform: keep)
         .onTapGesture(perform: select)
         .onHover { isHovering = $0 }
