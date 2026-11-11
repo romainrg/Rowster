@@ -31,7 +31,7 @@ struct WelcomeView: View {
             connections
         }
         .frame(minWidth: 760, minHeight: 480)
-        .background(Theme.ground)
+        .background { ThemeGround() }
         .sheet(item: $editing) { edited in
             ConnectionFormView(
                 draft: edited.profile, isNew: edited.isNew, groups: model.library.groups, model: model
@@ -75,7 +75,9 @@ struct WelcomeView: View {
                 .resizable()
                 .frame(width: 96, height: 96)
                 .accessibilityHidden(true)
-            Text(verbatim: "Rowster").font(.system(size: 26, weight: .bold, design: .rounded))
+            Text(verbatim: "Rowster")
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+                .foregroundStyle(Theme.wordmark)
             Text("Version \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.0")")
                 .font(.callout)
                 .foregroundStyle(.secondary)
@@ -119,8 +121,8 @@ struct WelcomeView: View {
             }
             .padding(.horizontal, 10)
             .frame(height: 30)
-            .background(Theme.softFill, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(Theme.softStroke))
+            .background(Theme.softFill, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Theme.softStroke))
             .padding(.horizontal, 16)
             .padding(.top, 16)
             .padding(.bottom, 10)

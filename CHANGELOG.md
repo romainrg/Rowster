@@ -4,6 +4,10 @@ All notable changes to Rowster are documented here. The format follows [Keep a C
 
 ## [Unreleased]
 
+### Changed
+
+- Visual identity *Nebula*: an indigo, raspberry and amber gradient, frosted-glass surfaces on a softly lit ground, monospaced data in the grid, new syntax colors, gradient environment badges, and a new app icon.
+
 ## [0.1.0] - 2026-11-10
 
 First public version.

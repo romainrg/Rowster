@@ -41,7 +41,7 @@ struct ConnectionFormView: View {
             footer
         }
         .frame(width: 560, height: 640)
-        .background(Theme.ground)
+        .background { ThemeGround() }
         .onChange(of: draft.label) { _, label in
             if label == .production { draft.opensReadOnly = true }
         }

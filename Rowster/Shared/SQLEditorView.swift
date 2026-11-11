@@ -118,7 +118,7 @@ struct SQLEditorView: NSViewRepresentable {
             guard let current = statements.last(where: { $0.range.lowerBound <= position }) ?? statements.first,
                   let range = textRange(NSRange(current.range, in: text), layout: layout) else { return }
             layout.addRenderingAttribute(
-                .backgroundColor, value: NSColor.controlAccentColor.withAlphaComponent(0.10), for: range)
+                .backgroundColor, value: Theme.Code.currentStatement, for: range)
         }
 
         private func textRange(_ range: NSRange, layout: NSTextLayoutManager) -> NSTextRange? {
@@ -130,12 +130,12 @@ struct SQLEditorView: NSViewRepresentable {
 
         private static func color(_ kind: SyntaxClass) -> NSColor {
             switch kind {
-            case .keyword: return .systemPurple
-            case .string: return .systemRed
-            case .number: return .systemBlue
+            case .keyword: return Theme.Code.keyword
+            case .string: return Theme.Code.string
+            case .number: return Theme.Code.number
             case .comment: return .secondaryLabelColor
-            case .quotedIdentifier: return .systemTeal
-            case .parameter: return .systemOrange
+            case .quotedIdentifier: return Theme.Code.quotedIdentifier
+            case .parameter: return Theme.Code.parameter
             }
         }
     }

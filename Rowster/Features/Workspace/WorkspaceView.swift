@@ -19,12 +19,16 @@ struct WorkspaceView: View {
         .navigationTitle(Text(verbatim: model.profile.displayName))
         .navigationSubtitle(Text(verbatim: subtitle))
         .toolbar { toolbar }
-        .toolbarBackground(tint.opacity(model.profile.label == .none ? 0.10 : 0.30), for: .windowToolbar)
+        .toolbarBackground(toolbarWash, for: .windowToolbar)
         .toolbarBackground(.visible, for: .windowToolbar)
-        .background(Theme.ground)
+        .background { ThemeGround() }
         // A strip in the connection color, so the environment stays visible whatever the toolbar shows.
         .overlay(alignment: .top) {
-            if model.profile.label != .none { tint.frame(height: 3).accessibilityHidden(true) }
+            if model.profile.label != .none {
+                LinearGradient(colors: [tint, tint.opacity(0.55)], startPoint: .leading, endPoint: .trailing)
+                    .frame(height: 3)
+                    .accessibilityHidden(true)
+            }
         }
         .focusedSceneValue(\.workspace, model)
         .sheet(item: $model.hazardRequest, onDismiss: { model.answerHazard(false) }) { request in
@@ -38,6 +42,13 @@ struct WorkspaceView: View {
         } message: {
             Text(verbatim: model.actionError ?? "")
         }
+    }
+
+    /// The toolbar, washed with the connection color: strong on the left, fading to the right.
+    private var toolbarWash: LinearGradient {
+        let strength = model.profile.label == .none ? 0.10 : (model.profile.label == .production ? 0.42 : 0.30)
+        return LinearGradient(
+            colors: [tint.opacity(strength), tint.opacity(strength * 0.35)], startPoint: .leading, endPoint: .trailing)
     }
 
     private var subtitle: String {

@@ -1,73 +1,56 @@
 import AppKit
 
-// Draws the Rowster app icon (a data grid with one highlighted row on an indigo-to-teal tile)
-// into the given AppIcon.appiconset.
+// Draws the Rowster app icon (a white row stepping out of a frosted-glass grid, on an indigo → raspberry →
+// amber tile) into the given AppIcon.appiconset.
 // Usage: swift scripts/make-icon.swift Rowster/Resources/Assets.xcassets/AppIcon.appiconset [icon.png]
 // The optional second argument also writes a 512 px copy (used by the README).
 let output = URL(fileURLWithPath: CommandLine.arguments[1], isDirectory: true)
 try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
 
-func color(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat, _ a: CGFloat = 1) -> NSColor {
-    NSColor(srgbRed: r, green: g, blue: b, alpha: a)
+func color(hex: UInt32, alpha: CGFloat = 1) -> NSColor {
+    NSColor(
+        srgbRed: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255,
+        blue: CGFloat(hex & 0xFF) / 255, alpha: alpha)
+}
+
+let locations: [CGFloat] = [0, 0.55, 1]
+let signature = NSGradient(
+    colors: [color(hex: 0x5B3FE6), color(hex: 0xC42A73), color(hex: 0xF59E42)], atLocations: locations,
+    colorSpace: .sRGB)!
+
+func pill(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat = 32) -> NSBezierPath {
+    NSBezierPath(roundedRect: NSRect(x: x, y: y, width: width, height: height), xRadius: height / 2, yRadius: height / 2)
 }
 
 func drawGrid() {
-    let card = NSRect(x: 232, y: 262, width: 560, height: 500)
-    let cardPath = NSBezierPath(roundedRect: card, xRadius: 56, yRadius: 56)
+    // The glass grid.
+    let card = NSBezierPath(roundedRect: NSRect(x: 256, y: 280, width: 512, height: 464), xRadius: 80, yRadius: 80)
+    color(hex: 0xFFFFFF, alpha: 0.16).setFill()
+    card.fill()
+    color(hex: 0xFFFFFF, alpha: 0.5).setStroke()
+    card.lineWidth = 6
+    card.stroke()
 
+    // The rows that stay in the grid.
+    color(hex: 0xFFFFFF, alpha: 0.75).setFill()
+    for (x, width) in [(324, 112), (464, 236)] as [(CGFloat, CGFloat)] { pill(x: x, y: 624, width: width).fill() }
+    for (x, width) in [(324, 112), (464, 192)] as [(CGFloat, CGFloat)] { pill(x: x, y: 368, width: width).fill() }
+
+    // The row that steps out, white and lifted.
+    let row = NSBezierPath(roundedRect: NSRect(x: 196, y: 452, width: 632, height: 120), xRadius: 60, yRadius: 60)
     NSGraphicsContext.saveGraphicsState()
     let shadow = NSShadow()
-    shadow.shadowColor = NSColor.black.withAlphaComponent(0.28)
-    shadow.shadowBlurRadius = 30
-    shadow.shadowOffset = NSSize(width: 0, height: -16)
+    shadow.shadowColor = color(hex: 0x2A0A3A, alpha: 0.45)
+    shadow.shadowBlurRadius = 40
+    shadow.shadowOffset = NSSize(width: 0, height: -28)
     shadow.set()
-    color(1, 1, 1).setFill()
-    cardPath.fill()
+    NSColor.white.setFill()
+    row.fill()
     NSGraphicsContext.restoreGraphicsState()
 
-    NSGraphicsContext.saveGraphicsState()
-    cardPath.addClip()
-
-    // Header row.
-    let rowHeight: CGFloat = 100
-    let header = NSRect(x: card.minX, y: card.maxY - rowHeight, width: card.width, height: rowHeight)
-    NSGradient(starting: color(0.20, 0.22, 0.45), ending: color(0.27, 0.30, 0.58))!.draw(in: header, angle: 90)
-
-    // Body rows, one highlighted like a pending change.
-    for row in 0..<4 {
-        let rect = NSRect(x: card.minX, y: card.maxY - rowHeight * CGFloat(row + 2), width: card.width, height: rowHeight)
-        if row == 1 {
-            NSGradient(starting: color(1.0, 0.80, 0.30), ending: color(1.0, 0.62, 0.22))!.draw(in: rect, angle: 0)
-        } else {
-            (row % 2 == 0 ? color(1, 1, 1) : color(0.95, 0.96, 0.99)).setFill()
-            rect.fill()
-        }
+    for (x, width) in [(284, 112), (424, 272)] as [(CGFloat, CGFloat)] {
+        signature.draw(in: pill(x: x, y: 496, width: width), angle: 0)
     }
-
-    // Cell placeholders.
-    let columns: [(x: CGFloat, width: CGFloat)] = [(44, 96), (196, 170), (410, 106)]
-    for row in 0..<5 {
-        let y = card.maxY - rowHeight * CGFloat(row + 1) + 36
-        for (index, column) in columns.enumerated() {
-            let shrink = CGFloat((row * 3 + index * 5) % 4) * 14
-            let pill = NSRect(x: card.minX + column.x, y: y, width: column.width - shrink, height: 28)
-            let fill: NSColor
-            switch row {
-            case 0: fill = color(1, 1, 1, 0.85)
-            case 2: fill = color(0.35, 0.20, 0.05, 0.70)
-            default: fill = color(0.27, 0.30, 0.58, index == 0 ? 0.55 : 0.28)
-            }
-            fill.setFill()
-            NSBezierPath(roundedRect: pill, xRadius: 14, yRadius: 14).fill()
-        }
-    }
-
-    // Column separators.
-    color(0.20, 0.22, 0.45, 0.10).setFill()
-    for x in [card.minX + 168, card.minX + 384] {
-        NSRect(x: x, y: card.minY, width: 4, height: card.height - rowHeight).fill()
-    }
-    NSGraphicsContext.restoreGraphicsState()
 }
 
 func render(pixels: Int) -> Data {
@@ -84,20 +67,16 @@ func render(pixels: Int) -> Data {
     let body = NSBezierPath(roundedRect: NSRect(x: 100, y: 100, width: 824, height: 824), xRadius: 185, yRadius: 185)
     NSGraphicsContext.saveGraphicsState()
     let shadow = NSShadow()
-    shadow.shadowColor = NSColor.black.withAlphaComponent(0.3)
+    shadow.shadowColor = color(hex: 0x1A0B2E, alpha: 0.35)
     shadow.shadowBlurRadius = 24
     shadow.shadowOffset = NSSize(width: 0, height: -12)
     shadow.set()
     NSColor.black.setFill()
     body.fill()
     NSGraphicsContext.restoreGraphicsState()
-    NSGradient(starting: color(0.36, 0.30, 0.86), ending: color(0.06, 0.66, 0.70))!.draw(in: body, angle: -60)
-
-    NSGraphicsContext.saveGraphicsState()
-    body.addClip()
-    color(1, 1, 1, 0.10).setFill()
-    NSBezierPath(ovalIn: NSRect(x: 420, y: 520, width: 760, height: 760)).fill()
-    NSGraphicsContext.restoreGraphicsState()
+    signature.draw(in: body, angle: -45)
+    NSGradient(starting: color(hex: 0xFFFFFF, alpha: 0.35), ending: color(hex: 0xFFFFFF, alpha: 0))!
+        .draw(in: body, relativeCenterPosition: NSPoint(x: -0.5, y: 0.7))
 
     drawGrid()
 
